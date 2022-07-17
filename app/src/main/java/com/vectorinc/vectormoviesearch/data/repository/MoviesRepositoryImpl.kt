@@ -21,7 +21,7 @@ class MoviesRepositoryImpl @Inject constructor(
 ) : MoviesRepository {
     private val dao = db.dao
 
-    override suspend fun getMoviesGenre(fetchFromRemote: Boolean): Flow<Resource<MoviesGenreListing>> {
+    override suspend fun getMoviesGenre(fetchFromRemote: Boolean ): Flow<Resource<MoviesGenreListing>> {
         return flow {
             emit(Resource.isLoading(true))
             val localMoviesListings = dao.readCompanyListings()

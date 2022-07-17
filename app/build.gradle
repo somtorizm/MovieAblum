@@ -76,10 +76,16 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
 
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.1.0")
+
+
+
     // Compose dependencies
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.activity:activity-compose:1.6.0-alpha01"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha03"
     implementation "com.google.accompanist:accompanist-swiperefresh:0.24.2-alpha"
 
     // Compose Nav Destinations
