@@ -9,14 +9,19 @@ interface MoviesApi {
 
 
 
-    @GET("movie?")
+    @GET("discover/movie?")
     suspend fun getGenreMoviesListing(
+        @Query("api_key") apiKey : String = API_KEY
+    ): MoviesGenreListingDto
+
+    @GET("trending/all/day?")
+    suspend fun getGenreTrendingListing(
         @Query("api_key") apiKey : String = API_KEY
     ): MoviesGenreListingDto
 
     companion object {
         const val API_KEY = "df3519c1f585ca1a3cfdf76d1b495fdb"
-        const val BASE_URL = "https://api.themoviedb.org/3/discover/"
+        const val BASE_URL = "https://api.themoviedb.org/3/"
     }
 }
 

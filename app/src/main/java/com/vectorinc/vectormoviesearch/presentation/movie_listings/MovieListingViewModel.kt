@@ -18,9 +18,13 @@ class MovieListingViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     var state by mutableStateOf(MoviesListingState())
+    var stateTrending by mutableStateOf(MoviesListingState())
+
+
 
     init {
         getMoviesListings()
+        getMoviesTrendingListings()
     }
 
 
@@ -28,6 +32,8 @@ class MovieListingViewModel @Inject constructor(
         when (event) {
             is MoviesListingEvent.Refresh -> {
                 getMoviesListings(fetchFromRemote = true)
+                getMoviesTrendingListings(fetchFromRemote = true)
+
             }
         }
     }
@@ -43,6 +49,34 @@ class MovieListingViewModel @Inject constructor(
                         result.data?.let { listings ->
 
                             state = state.copy(
+                                movies = listings
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+
+                    }
+                    is Resource.isLoading -> {
+                    }
+
+                }
+
+            }
+        }
+
+    }
+
+    private fun getMoviesTrendingListings(
+        fetchFromRemote: Boolean = false
+    ) {
+        viewModelScope.launch {
+
+            repository.getMoviesTrending(fetchFromRemote).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        result.data?.let { listings ->
+
+                            stateTrending = stateTrending.copy(
                                 movies = listings
                             )
                         }

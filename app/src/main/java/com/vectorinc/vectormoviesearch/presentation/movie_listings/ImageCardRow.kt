@@ -2,6 +2,7 @@ package com.vectorinc.vectormoviesearch.presentation.movie_listings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -17,6 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.vectorinc.vectormoviesearch.domain.model.Result
+import com.vectorinc.vectormoviesearch.presentation.destinations.PreviewScreenDestination
 import com.vectorinc.vectormoviesearch.ui.theme.DarkBlue
 
 @Composable
@@ -26,9 +30,35 @@ fun ImageCardRow(
     modifier: Modifier = Modifier,
     movieTitle: String,
     movieOriginalTitle: String,
-    movieDescription: String
+    movieDescription: String,
+    navigator: DestinationsNavigator,
+    result: Result? = null
 ) {
-    Row(modifier = modifier, Arrangement.SpaceAround) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable {
+                if (result != null) {
+                    navigator.navigate(
+                        PreviewScreenDestination(
+                            result.adult ?: false,
+                            result.backdropPath ?: "",
+                            result.id ?: 0,
+                            result.language ?: "",
+                            result.titleOriginal ?: "",
+                            result.description ?: "",
+                            result.popularity ?: 0.0,
+                            result.imagePoster ?: "",
+                            result.dateReleased ?: "",
+                            result.title ?: "",
+                            result.hasVideo ?: false,
+                            result.voteAverage ?: 0.0,
+                            result.voteCount ?: 0
+                        )
+                    )
+                }
+            }, Arrangement.SpaceAround
+    ) {
         Box(
             modifier = modifier
                 .fillMaxWidth(0.5f)

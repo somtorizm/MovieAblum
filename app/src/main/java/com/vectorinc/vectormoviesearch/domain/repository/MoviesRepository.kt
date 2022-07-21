@@ -9,4 +9,8 @@ interface MoviesRepository {
     suspend fun getMoviesGenre(
         fetchFromRemote : Boolean
     ): Flow<Resource<MoviesGenreListing>>
+
+    suspend fun getMoviesTrending(
+        fetchFromRemote : Boolean
+    ): Flow<Resource<MoviesGenreListing>>
 }

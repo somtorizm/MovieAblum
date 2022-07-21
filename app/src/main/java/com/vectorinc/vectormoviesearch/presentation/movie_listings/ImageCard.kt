@@ -24,6 +24,7 @@ fun ImageCard(
     painter: Painter,
     modifier: Modifier = Modifier,
     movieTitle: String,
+    movieOriginalTitle : String,
     voteRate: Double,
 
     ) {
@@ -37,7 +38,7 @@ fun ImageCard(
                Box(
                    modifier = Modifier
                        .height(200.dp)
-                       .width(250.dp)
+                       .width(170.dp)
                ) {
                    Image(
                        painter = painter,
@@ -84,13 +85,15 @@ fun ImageCard(
 
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = movieTitle,
+            text = if(movieTitle == "null") "" else movieTitle,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier
                 .padding(5.dp)
-                .width(250.dp),
+                .width(170.dp),
             overflow = TextOverflow.Ellipsis,
-            fontSize = 15.sp
+            fontSize = 12.sp,
+            maxLines = 1,
+            color = Color.Gray
         )
     }
 

@@ -5,12 +5,11 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class MoviesEntity(
-    @PrimaryKey val page: Int?,
+     val page: Int?,
     val result: List<Result>?,
     val totalPages: Int?,
     val totalResults: Int?,
-
-
+     @PrimaryKey val _id : Int? = null
     )
 
 data class Result(
