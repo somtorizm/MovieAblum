@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -32,7 +33,7 @@ fun SplashScreen(navigator: DestinationsNavigator){
     }
     LaunchedEffect(key1 = true){
         scale.animateTo(
-            targetValue = 0.9f,
+            targetValue = 1.0f,
             animationSpec = tween(
                 durationMillis = 500,
                 easing= {
@@ -42,7 +43,7 @@ fun SplashScreen(navigator: DestinationsNavigator){
         )
         delay(3000L)
 
-        navigator.navigate(ShowMoviesDestination,)
+        navigator.navigate(ShowMoviesDestination)
 
 
 
@@ -58,7 +59,8 @@ fun SplashScreen(navigator: DestinationsNavigator){
         Image(
             painter = painterResource(id = com.vectorinc.vectormoviesearch.R.drawable.creaview_logox),
             contentDescription = "Logo",
-            modifier = Modifier.scale(scale.value)
+            modifier = Modifier.scale(scale.value),
+            contentScale = ContentScale.Crop
         )
 
     }

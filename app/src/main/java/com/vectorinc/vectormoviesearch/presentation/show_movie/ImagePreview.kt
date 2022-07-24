@@ -39,7 +39,7 @@ fun ImagePreview(
                             Color.Transparent,
                             DarkBlue,
                         ),
-                        startY = 200f
+                        startY = 300f
 
                     )
                 )

@@ -39,6 +39,7 @@ fun ShowMovies(
 
 
     Column() {
+        Spacer(modifier = Modifier.height(20.dp))
         TopBar(
             name = "Victor", modifier = Modifier
                 .padding(10.dp)
