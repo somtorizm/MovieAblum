@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.vectorinc.vectormoviesearch.domain.model.Result
 import com.vectorinc.vectormoviesearch.presentation.destinations.PreviewScreenDestination
@@ -26,14 +27,21 @@ import com.vectorinc.vectormoviesearch.ui.theme.DarkBlue
 @Composable
 fun ImageCardRow(
     voteRate: Double,
-    painter: Painter,
+     imageurl : String,
     modifier: Modifier = Modifier,
     movieTitle: String,
     movieOriginalTitle: String,
     movieDescription: String,
     navigator: DestinationsNavigator,
+    movieId : Int,
     result: Result? = null
 ) {
+
+    val baseImageUrl = "https://image.tmdb.org/t/p/original/"
+    val movieUrl =
+        rememberAsyncImagePainter(
+            baseImageUrl +  imageurl
+        )
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -41,19 +49,7 @@ fun ImageCardRow(
                 if (result != null) {
                     navigator.navigate(
                         PreviewScreenDestination(
-                            result.adult ?: false,
-                            result.backdropPath ?: "",
-                            result.id ?: 0,
-                            result.language ?: "",
-                            result.titleOriginal ?: "",
-                            result.description ?: "",
-                            result.popularity ?: 0.0,
-                            result.imagePoster ?: "",
-                            result.dateReleased ?: "",
-                            result.title ?: "",
-                            result.hasVideo ?: false,
-                            result.voteAverage ?: 0.0,
-                            result.voteCount ?: 0
+                            movieID = movieId
                         )
                     )
                 }
@@ -77,7 +73,7 @@ fun ImageCardRow(
                 ) {
                     Image(
                         modifier = Modifier.fillMaxWidth(),
-                        painter = painter,
+                        painter = movieUrl,
                         contentDescription = null,
                         contentScale = ContentScale.Crop
                     )

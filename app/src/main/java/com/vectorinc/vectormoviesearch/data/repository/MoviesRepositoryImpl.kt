@@ -1,14 +1,19 @@
 package com.vectorinc.vectormoviesearch.data.repository
 
+import android.util.Log
 import com.vectorinc.vectormoviesearch.data.local.MovieDatabase
+import com.vectorinc.vectormoviesearch.data.mapper.toMoviesDiscover
 import com.vectorinc.vectormoviesearch.data.mapper.toMoviesEntity
 import com.vectorinc.vectormoviesearch.data.mapper.toMoviesGenreListing
 import com.vectorinc.vectormoviesearch.data.mapper.toMoviesTrending
 import com.vectorinc.vectormoviesearch.data.remote.MoviesApi
+import com.vectorinc.vectormoviesearch.domain.model.MoviesDiscover
 import com.vectorinc.vectormoviesearch.domain.model.MoviesGenreListing
 import com.vectorinc.vectormoviesearch.domain.repository.MoviesRepository
 import com.vectorinc.vectormoviesearch.util.Resource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import okio.IOException
 import retrofit2.HttpException
@@ -113,6 +118,69 @@ class MoviesRepositoryImpl @Inject constructor(
 
 
             }
+        }
+
+    }
+
+    override suspend fun getSearchMovies(
+        searchQuery: String,
+        page: Int
+    ): Flow<Resource<MoviesGenreListing>> {
+        return flow {
+            emit(Resource.isLoading(true))
+
+            val remoteListings = try {
+                val response = api.searchMoviesListing(searchQuery = searchQuery, page = page)
+                emit(
+                    Resource.Success(
+                        data = response.body()?.toMoviesGenreListing()
+                    )
+                )
+                emit(Resource.isLoading(false))
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                emit(Resource.isLoading(false))
+
+                null
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                emit(Resource.isLoading(false))
+
+                null
+            }
+
+
+        }
+    }
+
+    override suspend fun getMovieSelected(movieId: Int): Flow<Resource<MoviesDiscover>> {
+        return flow {
+
+            val remoteMovies = try {
+                api.showMoviesSelected(movieId)
+
+
+           } catch (e: IOException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                Log.d("Hello", "http erro loading")
+
+                null
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                null
+            }
+            remoteMovies.let {
+                val data = it?.body()?.toMoviesDiscover()
+                emit(Resource.Success(data))
+
+            }
+
+
         }
 
     }

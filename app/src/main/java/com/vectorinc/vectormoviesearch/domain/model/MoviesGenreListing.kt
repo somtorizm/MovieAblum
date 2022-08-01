@@ -2,7 +2,7 @@ package com.vectorinc.vectormoviesearch.domain.model
 
 data class MoviesGenreListing(
     val page: Int?,
-    val result: List<Result>?,
+    val result: MutableList<Result>?,
     val totalPages: Int?,
     val totalResults: Int?,
 

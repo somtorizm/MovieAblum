@@ -14,10 +14,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.vectorinc.vectormoviesearch.R
+import com.vectorinc.vectormoviesearch.presentation.destinations.SearchDestination
 import com.vectorinc.vectormoviesearch.ui.theme.DarkBlueBlured
 
 @Composable
 fun TopBar(
+    navigator: DestinationsNavigator,
     name: String,
     modifier: Modifier = Modifier) {
     Row(

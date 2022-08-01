@@ -5,5 +5,5 @@ sealed class Resource<T>(val data: T? = null, val message: String? = null) {
 
     class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
 
-    class isLoading<T>(isLoading: Boolean = true) : Resource<T>(null)
+    class isLoading<T>(isLoading: Boolean = false) : Resource<T>(null)
 }

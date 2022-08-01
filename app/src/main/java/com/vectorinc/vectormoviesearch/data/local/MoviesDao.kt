@@ -25,18 +25,16 @@ interface MoviesDao {
 
     @Query(
         """
-        SELECT * 
-      FROM  MoviesEntity
-    """
+          SELECT * FROM  MoviesEntity
+        """
     )
     suspend fun readMovieListings(): MoviesEntity
 
 
     @Query(
         """
-        SELECT * 
-      FROM  moviestrendingentity
-    """
+           SELECT *FROM  moviestrendingentity
+         """
     )
     suspend fun readMovieTrendingListings(): MoviesEntity
 

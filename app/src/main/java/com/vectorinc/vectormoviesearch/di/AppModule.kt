@@ -28,6 +28,8 @@ class AppModule {
             .create()
     }
 
+
+
     @Provides
     @Singleton
     fun provideStockDatabase(app: Application): MovieDatabase {
