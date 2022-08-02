@@ -1,7 +1,9 @@
 package com.vectorinc.vectormoviesearch.domain.repository
 
+import androidx.paging.PagingData
 import com.vectorinc.vectormoviesearch.domain.model.MoviesDiscover
 import com.vectorinc.vectormoviesearch.domain.model.MoviesGenreListing
+import com.vectorinc.vectormoviesearch.domain.model.Result
 import com.vectorinc.vectormoviesearch.util.Resource
 import kotlinx.coroutines.flow.Flow
 
@@ -19,4 +21,6 @@ interface MoviesRepository {
     ) : Flow<Resource<MoviesGenreListing>>
 
     suspend fun getMovieSelected(movieId : Int) : Flow<Resource<MoviesDiscover>>
+
+    suspend fun getMoviesPaging(query: String) : Flow<PagingData<Result>>
 }

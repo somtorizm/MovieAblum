@@ -89,7 +89,7 @@ fun ShowMovies(
                         Image(
                             painter = painterResource(com.vectorinc.vectormoviesearch.R.drawable.logo),
                             contentDescription = stringResource(com.vectorinc.vectormoviesearch.R.string.app_name),
-                            modifier = Modifier,
+                            modifier = Modifier.fillMaxWidth(0.5f),
                             contentScale = ContentScale.Crop
 
                         )

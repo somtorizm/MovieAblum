@@ -7,19 +7,22 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.vectorinc.vectormoviesearch.domain.model.Result
 import com.vectorinc.vectormoviesearch.ui.theme.DarkPurple
 
 
@@ -64,22 +67,22 @@ fun Search(
         val baseImageUrl = "https://image.tmdb.org/t/p/original/"
 
 
-        if (!state.isLoading) {
-            Loading()
-        } else {
-            LazyVerticalGrid(
-                GridCells.Fixed(3),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
+        val userListItems: LazyPagingItems<Result> = viewModel.user.collectAsLazyPagingItems()
+        Log.d("Paging", "${userListItems.itemCount}")
 
-                items(state.movies?.result?.size ?: 0) { i ->
+        LazyVerticalGrid(
+            GridCells.Fixed(3),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
 
+            items(userListItems.itemCount) { i ->
 
-                    val item = viewModel.state.movies?.result?.get(i)
+                userListItems[i].let {
+                    val item = it
                     Log.d("Loading", "${state.isLoading}")
 
 
@@ -97,10 +100,35 @@ fun Search(
                     )
 
                 }
+                userListItems.apply {
+                    when{
+                        loadState.append is LoadState.Loading -> {
+                          LoadingItem()
+                        }
+                    }
+                }
             }
+
         }
-
-
     }
+
+
 }
+@Composable
+fun LoadingItem() {
+    CircularProgressIndicator(
+        modifier =
+        Modifier
+            .testTag("ProgressBarItem")
+            .fillMaxWidth()
+            .padding(16.dp)
+            .wrapContentWidth(
+                Alignment.CenterHorizontally
+            ),
+        color = Color.Blue
+    )
+}
+
+
+
 

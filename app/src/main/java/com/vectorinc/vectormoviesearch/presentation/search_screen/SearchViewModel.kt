@@ -7,12 +7,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.vectorinc.vectormoviesearch.data.remote.MoviesApi
+import com.vectorinc.vectormoviesearch.domain.MoviesPagingSource
 import com.vectorinc.vectormoviesearch.domain.model.Result
 import com.vectorinc.vectormoviesearch.domain.repository.MoviesRepository
 import com.vectorinc.vectormoviesearch.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +27,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val repository: MoviesRepository
+    private val repository: MoviesRepository,
+    private val api : MoviesApi
 ) : ViewModel() {
     companion object {
         val TAG = "View Model Class"
@@ -30,6 +38,9 @@ class SearchViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
+    var user: Flow<PagingData<Result>> = Pager(PagingConfig(pageSize = 20)) {
+        MoviesPagingSource(api,state.searchQuery)
+    }.flow.cachedIn(viewModelScope)
 
 
     fun search(query: String, page: Int) {
@@ -61,6 +72,12 @@ class SearchViewModel @Inject constructor(
 
 
 
+
+
+
+
+
+
     fun onEvent(event: SearchListingEvent) {
         when (event) {
             is SearchListingEvent.OnSearchQueryChange -> {
@@ -69,6 +86,11 @@ class SearchViewModel @Inject constructor(
                 searchJob = viewModelScope.launch {
                     delay(500L)
                     search(state.searchQuery, page = 1)
+                    user = Pager(PagingConfig(pageSize = 20)) {
+                        MoviesPagingSource(api,state.searchQuery)
+                    }.flow.cachedIn(viewModelScope)
+
+
                 }
             }
             SearchListingEvent.Refresh -> TODO()

@@ -1,14 +1,19 @@
 package com.vectorinc.vectormoviesearch.data.repository
 
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.vectorinc.vectormoviesearch.data.local.MovieDatabase
 import com.vectorinc.vectormoviesearch.data.mapper.toMoviesDiscover
 import com.vectorinc.vectormoviesearch.data.mapper.toMoviesEntity
 import com.vectorinc.vectormoviesearch.data.mapper.toMoviesGenreListing
 import com.vectorinc.vectormoviesearch.data.mapper.toMoviesTrending
 import com.vectorinc.vectormoviesearch.data.remote.MoviesApi
+import com.vectorinc.vectormoviesearch.domain.MoviesPagingSource
 import com.vectorinc.vectormoviesearch.domain.model.MoviesDiscover
 import com.vectorinc.vectormoviesearch.domain.model.MoviesGenreListing
+import com.vectorinc.vectormoviesearch.domain.model.Result
 import com.vectorinc.vectormoviesearch.domain.repository.MoviesRepository
 import com.vectorinc.vectormoviesearch.util.Resource
 import kotlinx.coroutines.delay
@@ -184,5 +189,16 @@ class MoviesRepositoryImpl @Inject constructor(
         }
 
     }
+
+    override suspend fun getMoviesPaging(query: String): Flow<PagingData<Result>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { MoviesPagingSource( api,query) }
+        ).flow
+    }
+
 
 }
