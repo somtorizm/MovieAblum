@@ -16,8 +16,14 @@ interface MoviesApi {
     ): MoviesGenreListingDto
 
     @GET("trending/all/day?")
-    suspend fun getGenreTrendingListing(
-        @Query("api_key") apiKey: String = API_KEY
+    suspend fun getMoviesTrendingPaging(
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("page") page: Int
+    ): Response<MoviesGenreListingDto>
+
+    @GET("trending/all/day?")
+    suspend fun getMoviesTrending(
+        @Query("api_key") apiKey: String = API_KEY,
     ): MoviesGenreListingDto
 
     @GET("search/movie?")

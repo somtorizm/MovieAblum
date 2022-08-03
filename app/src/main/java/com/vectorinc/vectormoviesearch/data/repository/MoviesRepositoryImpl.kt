@@ -10,15 +10,14 @@ import com.vectorinc.vectormoviesearch.data.mapper.toMoviesEntity
 import com.vectorinc.vectormoviesearch.data.mapper.toMoviesGenreListing
 import com.vectorinc.vectormoviesearch.data.mapper.toMoviesTrending
 import com.vectorinc.vectormoviesearch.data.remote.MoviesApi
-import com.vectorinc.vectormoviesearch.domain.MoviesPagingSource
 import com.vectorinc.vectormoviesearch.domain.model.MoviesDiscover
 import com.vectorinc.vectormoviesearch.domain.model.MoviesGenreListing
 import com.vectorinc.vectormoviesearch.domain.model.Result
+import com.vectorinc.vectormoviesearch.data.pagination.MoviesPagingSource
+import com.vectorinc.vectormoviesearch.data.pagination.TrendingMoviesPagingSource
 import com.vectorinc.vectormoviesearch.domain.repository.MoviesRepository
 import com.vectorinc.vectormoviesearch.util.Resource
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import okio.IOException
 import retrofit2.HttpException
@@ -80,6 +79,17 @@ class MoviesRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun getMoviesTrendingPaging(page: Int): Flow<PagingData<Result>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { TrendingMoviesPagingSource(api) }
+        ).flow
+    }
+
+
     override suspend fun getMoviesTrending(fetchFromRemote: Boolean): Flow<Resource<MoviesGenreListing>> {
         return flow {
             emit(Resource.isLoading(true))
@@ -99,7 +109,7 @@ class MoviesRepositoryImpl @Inject constructor(
             }
 
             val remoteListings = try {
-                val response = api.getGenreTrendingListing()
+                val response = api.getMoviesTrending()
                 response.toMoviesTrending()
 
             } catch (e: IOException) {
@@ -126,6 +136,7 @@ class MoviesRepositoryImpl @Inject constructor(
         }
 
     }
+
 
     override suspend fun getSearchMovies(
         searchQuery: String,
@@ -168,7 +179,7 @@ class MoviesRepositoryImpl @Inject constructor(
                 api.showMoviesSelected(movieId)
 
 
-           } catch (e: IOException) {
+            } catch (e: IOException) {
                 e.printStackTrace()
                 emit(Resource.Error("Couldn't load data"))
                 Log.d("Hello", "http erro loading")
@@ -190,15 +201,6 @@ class MoviesRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getMoviesPaging(query: String): Flow<PagingData<Result>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = { MoviesPagingSource( api,query) }
-        ).flow
-    }
 
 
 }

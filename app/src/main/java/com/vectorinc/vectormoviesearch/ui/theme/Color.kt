@@ -28,6 +28,10 @@ val DarkPurple = Color(0xFF2196F3)
 
 val TextWhite = Color(0xFFEEEEEE)
 val DarkBlueBlured = Color(0x3EEFF0F3)
+val DarkGrayLight = Color(0x5E313235)
+val DarkDimLight = Color(0x1DEFF0F3)
+val Pink = Color(0xFFFF538E)
+
 
 val Yellow800 = Color(0xFFF29F05)
 val Red300 = Color(0xFFEA6D7E)
@@ -45,10 +49,10 @@ val JetcasterColors = darkColors(
 
 val ShimmerColorShades = listOf(
 
-    Color.LightGray.copy(0.8f),
+    DarkBlueBlured,
 
-    Color.LightGray.copy(0.1f),
+    DarkDimLight,
 
-    Color.LightGray.copy(0.7f)
+    DarkGrayLight
 
 )

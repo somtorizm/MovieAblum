@@ -13,14 +13,15 @@ interface MoviesRepository {
         fetchFromRemote : Boolean
     ): Flow<Resource<MoviesGenreListing>>
 
-    suspend fun getMoviesTrending(
-        fetchFromRemote : Boolean
-    ): Flow<Resource<MoviesGenreListing>>
+
+
+    suspend fun getMoviesTrendingPaging(page: Int): Flow<PagingData<Result>>
+
 
     suspend fun getSearchMovies( searchQuery : String , page: Int
     ) : Flow<Resource<MoviesGenreListing>>
 
     suspend fun getMovieSelected(movieId : Int) : Flow<Resource<MoviesDiscover>>
 
-    suspend fun getMoviesPaging(query: String) : Flow<PagingData<Result>>
+    suspend fun getMoviesTrending(fetchFromRemote: Boolean): Flow<Resource<MoviesGenreListing>>
 }

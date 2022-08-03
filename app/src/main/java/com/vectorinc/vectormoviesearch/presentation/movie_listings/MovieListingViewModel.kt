@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vectorinc.vectormoviesearch.data.remote.MoviesApi
 import com.vectorinc.vectormoviesearch.domain.repository.MoviesRepository
 import com.vectorinc.vectormoviesearch.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,16 +16,17 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieListingViewModel @Inject constructor(
     private val repository: MoviesRepository,
+    private val api: MoviesApi,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     var state by mutableStateOf(MoviesListingState())
     var stateTrending by mutableStateOf(MoviesListingState())
 
 
-
     init {
         getMoviesListings()
-        getMoviesTrendingListings()
+        getTrendingListings()
+
     }
 
 
@@ -32,7 +34,7 @@ class MovieListingViewModel @Inject constructor(
         when (event) {
             is MoviesListingEvent.Refresh -> {
                 getMoviesListings(fetchFromRemote = true)
-                getMoviesTrendingListings(fetchFromRemote = true)
+
 
             }
         }
@@ -66,7 +68,7 @@ class MovieListingViewModel @Inject constructor(
 
     }
 
-    private fun getMoviesTrendingListings(
+    private fun getTrendingListings(
         fetchFromRemote: Boolean = false
     ) {
         viewModelScope.launch {
