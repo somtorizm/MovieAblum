@@ -18,7 +18,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,6 +31,7 @@ class SearchViewModel @Inject constructor(
 
     var state by mutableStateOf(SearchListingState())
     private var searchJob: Job? = null
+    var scrollPosition = 0
 
     private var lastScrollIndex = 0
 
@@ -68,11 +68,10 @@ class SearchViewModel @Inject constructor(
 
     }
 
+
     var user: Flow<PagingData<Result>> = Pager(PagingConfig(pageSize = 20)) {
         MoviesPagingSource(api, state.searchQuery)
     }.flow
-
-
 
 
 }

@@ -16,7 +16,8 @@ import com.vectorinc.vectormoviesearch.ui.theme.DarkBlue
 @Composable
 fun ImagePreview(
     painter: Painter,
-    modifier: Modifier
+    modifier: Modifier,
+    color : Color
 ) {
     Box(
         modifier = Modifier
@@ -37,7 +38,7 @@ fun ImagePreview(
                     Brush.verticalGradient(
                         listOf(
                             Color.Transparent,
-                            DarkBlue,
+                            color,
                         ),
                         startY = 300f
 

@@ -3,9 +3,7 @@
 package com.vectorinc.vectormoviesearch.presentation.search_screen
 
 import android.util.Log
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -25,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -101,16 +100,7 @@ fun Search(
                 backgroundColor = appBarColor,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 title = {
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        IconButton(
-                            onClick = { navigator.popBackStack() }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.search)
-                            )
-                        }
-                    }
+
                     TextField(
                         value = searchTxt,
                         label = {
@@ -119,6 +109,7 @@ fun Search(
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = DarkPurple
                         ),
+
                         onValueChange = {
                             searchTxt = it
                             viewModel.onEvent(
@@ -126,12 +117,21 @@ fun Search(
                             )
 
                         },
-                        modifier = Modifier.fillMaxWidth(1.0f),
+                        modifier = Modifier.fillMaxWidth(),
                         placeholder = {
                             Text(text = "Search...")
                         },
                         maxLines = 1,
                         singleLine = true,
+                        leadingIcon = {
+                            Icon(Icons.Default.ArrowBack,
+                                contentDescription = "back Icon",
+                                modifier = Modifier
+                                    .clickable {
+                                        navigator.popBackStack()
+                                    }
+                            )
+                        },
                         trailingIcon = {
                             Icon(Icons.Default.Clear,
                                 contentDescription = "clear text",
@@ -146,7 +146,6 @@ fun Search(
                 },
 
                 )
-            Spacer(modifier = Modifier.height(5.dp))
 
             SearchMovies(movies = viewModel.user, navigator = navigator, scrollState, scrollUpState)
 
@@ -175,6 +174,7 @@ fun SearchMovies(
             .padding(10.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
+
     ) {
 
         items(userListItems.itemCount) { i ->
@@ -240,6 +240,17 @@ fun LoadingItem(visible: Boolean) {
     if (visible) {
         ShimmerAnimation()
     }
+}
+
+@Composable
+fun persistedScrollState(viewModel: SearchViewModel): ScrollState {
+    val scrollState = rememberScrollState(viewModel.scrollPosition)
+    DisposableEffect(key1 = null) {
+        onDispose {
+            viewModel.scrollPosition = scrollState.value
+        }
+    }
+    return scrollState
 }
 
 

@@ -4,5 +4,7 @@
     <string name="connection_error_title">Connection error</string>
     <string name="connection_error_message">Unable to fetch Movie feeds.\nCheck your internet connection and try again.</string>
     <string name="retry_label">Retry</string>
+    <string name="cast">Cast</string>
+    <string name="crew">Crew</string>
 
 </resources>

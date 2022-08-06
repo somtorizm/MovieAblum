@@ -10,6 +10,9 @@ import androidx.lifecycle.viewModelScope
 import com.vectorinc.vectormoviesearch.domain.repository.MoviesRepository
 import com.vectorinc.vectormoviesearch.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,17 +22,39 @@ class PreviewViewModel @Inject constructor(
     private val repository: MoviesRepository
 ) : ViewModel() {
 
+    enum class MovieCategory {
+        Cast, Crew
+    }
+    private var selectedCategory = MovieCategory.Cast
+    private val categories = MovieCategory.values().asList()
+
+
 
     var state by mutableStateOf(PreviewListingState())
 
     init {
+        getPreviewMovies()
+        state = state.copy(
+            movieCategories = categories,
+            selectedMovieCategory = selectedCategory,
+        )
+
+    }
+    fun onMovieCategorySelected(category: MovieCategory) {
+       state= state.copy(selectedMovieCategory = category)
+    }
+
+    fun getPreviewMovies(){
         state = state.copy(isLoading = false)
+        state = state.copy(error = false)
+
         viewModelScope.launch {
             val movieId = savedStateHandle.get<Int>("movieID") ?: return@launch
             repository.getMovieSelected(movieId).collect {
                 when (it) {
                     is Resource.Error -> {
                         Log.d("View Model State", "Error")
+                        state = state.copy(error = true)
 
 
                     }
@@ -47,7 +72,12 @@ class PreviewViewModel @Inject constructor(
             }
 
         }
+    }
 
+    fun onEvent(event : PreviewEvents){
+        when(event){
+            PreviewEvents.Refresh -> getPreviewMovies()
+        }
     }
 
 

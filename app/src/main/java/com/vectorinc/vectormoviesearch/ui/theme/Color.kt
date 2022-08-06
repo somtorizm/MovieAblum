@@ -29,7 +29,7 @@ val DarkPurple = Color(0xFF2196F3)
 val TextWhite = Color(0xFFEEEEEE)
 val DarkBlueBlured = Color(0x3EEFF0F3)
 val DarkGrayLight = Color(0x5E313235)
-val DarkDimLight = Color(0x1DEFF0F3)
+val DarkDimLight = Color(0x7A070116)
 val Pink = Color(0xFFFF538E)
 
 
