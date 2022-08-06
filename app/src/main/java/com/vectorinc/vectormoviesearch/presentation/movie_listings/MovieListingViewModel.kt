@@ -10,6 +10,7 @@ import com.vectorinc.vectormoviesearch.data.remote.MoviesApi
 import com.vectorinc.vectormoviesearch.domain.repository.MoviesRepository
 import com.vectorinc.vectormoviesearch.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,6 +35,7 @@ class MovieListingViewModel @Inject constructor(
         when (event) {
             is MoviesListingEvent.Refresh -> {
                 getMoviesListings(fetchFromRemote = true)
+                getTrendingListings(fetchFromRemote = true)
 
 
             }
@@ -45,6 +47,7 @@ class MovieListingViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
 
+            state = state.copy(isLoading = false)
             repository.getMoviesGenre(fetchFromRemote).collect { result ->
                 when (result) {
                     is Resource.Success -> {
@@ -52,6 +55,9 @@ class MovieListingViewModel @Inject constructor(
 
                             state = state.copy(
                                 movies = listings
+                            )
+                            state = state.copy(
+                                isLoading = true
                             )
                         }
                     }

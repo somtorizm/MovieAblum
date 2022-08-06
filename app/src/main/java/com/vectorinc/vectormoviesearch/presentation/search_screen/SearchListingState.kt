@@ -7,7 +7,7 @@ data class SearchListingState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val error: String? = null,
-    val searchQuery: String = "",
+    var searchQuery: String = "",
     val endReached : Boolean = false,
     val page : Int = 0
 )

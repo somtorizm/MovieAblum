@@ -3,6 +3,8 @@ package com.vectorinc.vectormoviesearch.presentation.search_screen
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -30,6 +32,19 @@ class SearchViewModel @Inject constructor(
 
     var state by mutableStateOf(SearchListingState())
     private var searchJob: Job? = null
+
+    private var lastScrollIndex = 0
+
+    private val _scrollUp = MutableLiveData(false)
+    val scrollUp: LiveData<Boolean>
+        get() = _scrollUp
+
+    fun updateScrollPosition(newScrollIndex: Int) {
+        if (newScrollIndex == lastScrollIndex) return
+
+        _scrollUp.value = newScrollIndex > lastScrollIndex
+        lastScrollIndex = newScrollIndex
+    }
 
     fun onEvent(event: SearchListingEvent) {
         when (event) {
