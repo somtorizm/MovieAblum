@@ -5,7 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.icons.Icons
@@ -14,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -57,7 +60,6 @@ fun PreviewScreen(
                 viewModel.onEvent(PreviewEvents.Refresh)
             }
         } else {
-            val size = state.movies?.genres?.size ?: 0
 
             val movieUrlBackDrop =
                 rememberAsyncImagePainter(
@@ -85,6 +87,7 @@ fun PreviewScreen(
                 }
                 Column(
                     modifier = Modifier
+                        .verticalScroll(rememberScrollState())
                         .fillMaxSize()
                         .windowInsetsPadding(
                             WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
@@ -96,128 +99,20 @@ fun PreviewScreen(
                             endYPercentage = 0.6f
                         )
                 ) {
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .offset(0.dp, (-60).dp)
-                                .fillMaxWidth(0.5f)
-                                .fillMaxHeight(0.4f)
-                                .padding(horizontal = 15.dp)
-
-                        ) {
-
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(15.dp),
-                                elevation = 8.dp
-                            ) {
-                                Box(
-                                    modifier = Modifier
-
-                                ) {
-                                    Image(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        painter = movieUrlImage,
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop
-                                    )
-
-                                }
-
-                            }
-
-                        }
-
-                        Column(
-                            verticalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier.padding(10.dp)
-                        ) {
-                            Text(
-                                text = state.movies?.title ?: "",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp
-                            )
-                            Spacer(modifier = Modifier.height(5.dp))
-
-                            Text(
-                                text = convertToDate(state.movies?.release_date ?: ""),
-                                fontWeight = FontWeight.Thin,
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colors.primary
-                            )
-                            Spacer(modifier = Modifier.height(10.dp))
-                            LazyRow(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                                items(size) { i ->
-                                    state.movies?.genres?.get(i).let {
-                                        Text(
-                                            text = it?.name ?: "",
-                                            fontWeight = FontWeight.SemiBold,
-                                            fontSize = 8.sp,
-                                            color = Color.White,
-                                            modifier = Modifier
-                                                .background(Color.DarkGray, RoundedCornerShape(30))
-                                                .padding(9.dp)
-
-                                        )
-                                    }
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Text(
-                                text = state.movies?.status ?: "",
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 8.sp,
-                                color = Color.White,
-                                modifier = Modifier
-                                    .background(MaterialTheme.colors.primary, RoundedCornerShape(30))
-                                    .padding(9.dp)
-
-                            )
-                            Spacer(modifier = Modifier.height(10.dp))
-
-
-
-
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_movie_icon),
-                                    contentDescription = stringResource(com.vectorinc.vectormoviesearch.R.string.search),
-                                    modifier = Modifier.size(35.dp)
-                                )
-                                Spacer(modifier = Modifier.width(10.dp))
-                                RatingBarItem(
-                                    voteRate = state.movies?.vote_average ?: 0.0,
-                                    number = 100,
-                                    radius = 12.dp,
-                                    color = Color.Yellow,
-                                    fontSize = 10.sp,
-                                    modifier = Modifier
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(5.dp))
-
-
-                        }
-
-
-                    }
-
+                    AppBar(movieUrlBackDrop = movieUrlBackDrop, navigator = navigator)
+                    TitleBody(movieUrlImage = movieUrlImage, viewModel = viewModel)
                     Column(
                         Modifier
-                            .fillMaxWidth()
+                            .fillMaxSize()
                             .padding(15.dp)
-                            .offset(0.dp, (-40).dp)
-                    ) {
+                            .offset(0.dp, (-30).dp))
+                      {
                         Text(
                             text = state.movies?.overview ?: "",
                             fontWeight = FontWeight.Normal,
                             fontSize = 15.sp,
                         )
-                        Log.d("Tab size", "${state.movieCategories.size}")
+                        Spacer(modifier = Modifier.height(10.dp))
                         if (state.movieCategories.isNotEmpty()) {
                             MovieCategoryTabs(
                                 categories = state.movieCategories,
@@ -229,21 +124,20 @@ fun PreviewScreen(
                         when (state.selectedMovieCategory) {
                             PreviewViewModel.MovieCategory.Cast -> {
                                 // TODO
-                                Log.d("Cast","Preview")
+                                Log.d("Cast", "Preview")
 
                             }
                             PreviewViewModel.MovieCategory.Crew -> {
-                                Log.d("Crew","Preview")
+                                Log.d("Crew", "Preview")
                             }
                         }
 
                     }
-
-
                 }
 
 
             }
+
 
         }
     }
@@ -266,7 +160,7 @@ private fun MovieCategoryTabs(
     TabRow(
         selectedTabIndex = selectedIndex,
         indicator = indicator,
-        modifier = modifier
+        modifier = modifier.background(Color.Transparent)
     ) {
         categories.forEachIndexed { index, category ->
             Tab(
@@ -275,7 +169,7 @@ private fun MovieCategoryTabs(
                 text = {
                     Text(
                         text = when (category) {
-                            PreviewViewModel.MovieCategory.Cast-> stringResource(R.string.cast)
+                            PreviewViewModel.MovieCategory.Cast -> stringResource(R.string.cast)
                             PreviewViewModel.MovieCategory.Crew -> stringResource(R.string.crew)
                         },
                         style = MaterialTheme.typography.body2
@@ -305,6 +199,168 @@ fun convertToDate(date: String): String {
     return "${date.month}" + " " + "${date.year}"
 }
 
+@Composable
+fun AppBar(movieUrlBackDrop: Painter, navigator: DestinationsNavigator) {
+    Box(Modifier.height(200.dp)) {
+        ImagePreview(
+            painter = movieUrlBackDrop,
+            modifier = Modifier.fillMaxWidth(),
+            color = Color.Transparent,
+        )
+
+        Column() {
+
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .windowInsetsTopHeight(WindowInsets.statusBars)
+            )
+            TopAppBar(
+                elevation = 0.dp,
+                backgroundColor = Color.Transparent,
+                title = {
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+
+                        IconButton(
+                            onClick = { navigator.popBackStack() },
+                            Modifier.background(
+                                DarkDimLight,
+                                RoundedCornerShape(100)
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.search),
+
+                                )
+                        }
+                    }
+                },
+
+                )
+        }
+
+
+    }
+}
+
+@Composable
+fun TitleBody(movieUrlImage: Painter, viewModel: PreviewViewModel) {
+    val state = viewModel.state
+    val size = state.movies?.genres?.size ?: 0
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+    ) {
+        Box(
+            modifier = Modifier
+                .offset(0.dp, (-60).dp)
+                .width(200.dp)
+                .height(250.dp)
+                .padding(horizontal = 15.dp)
+
+        ) {
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(15.dp),
+                elevation = 8.dp
+            ) {
+                Box(
+                    modifier = Modifier
+
+                ) {
+                    Image(
+                        modifier = Modifier.fillMaxWidth(),
+                        painter = movieUrlImage,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
+
+                }
+
+            }
+
+        }
+
+        Column(
+            verticalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.padding(10.dp)
+        ) {
+            Text(
+                text = state.movies?.title ?: "",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+
+            Text(
+                text = convertToDate(state.movies?.release_date ?: ""),
+                fontWeight = FontWeight.Thin,
+                fontSize = 12.sp,
+                color = MaterialTheme.colors.primary
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                items(size) { i ->
+                    state.movies?.genres?.get(i).let {
+                        Text(
+                            text = it?.name ?: "",
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 8.sp,
+                            color = Color.White,
+                            modifier = Modifier
+                                .background(Color.DarkGray, RoundedCornerShape(30))
+                                .padding(9.dp)
+
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = state.movies?.status ?: "",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 8.sp,
+                color = Color.White,
+                modifier = Modifier
+                    .background(
+                        MaterialTheme.colors.primary,
+                        RoundedCornerShape(30)
+                    )
+                    .padding(9.dp)
+
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+
+
+
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_movie_icon),
+                    contentDescription = stringResource(com.vectorinc.vectormoviesearch.R.string.search),
+                    modifier = Modifier.size(35.dp)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                RatingBarItem(
+                    voteRate = state.movies?.vote_average ?: 0.0,
+                    number = 100,
+                    radius = 12.dp,
+                    color = Color.Yellow,
+                    fontSize = 10.sp,
+                    modifier = Modifier
+                )
+            }
+            Spacer(modifier = Modifier.height(5.dp))
+
+
+        }
+
+
+    }
+}
 
 
 
