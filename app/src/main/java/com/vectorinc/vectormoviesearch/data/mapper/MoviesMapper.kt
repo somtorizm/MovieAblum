@@ -3,8 +3,10 @@ package com.vectorinc.vectormoviesearch.data.mapper
 
 import com.vectorinc.vectormoviesearch.data.local.MoviesEntity
 import com.vectorinc.vectormoviesearch.data.local.MoviesTrendingEntity
+import com.vectorinc.vectormoviesearch.data.remote.dto.MovieCreditDto
 import com.vectorinc.vectormoviesearch.data.remote.dto.MoviesDiscoverDto
 import com.vectorinc.vectormoviesearch.data.remote.dto.MoviesGenreListingDto
+import com.vectorinc.vectormoviesearch.domain.model.MovieCredit
 import com.vectorinc.vectormoviesearch.domain.model.MoviesDiscover
 import com.vectorinc.vectormoviesearch.domain.model.MoviesGenreListing
 import com.vectorinc.vectormoviesearch.domain.model.Result
@@ -107,6 +109,14 @@ fun MoviesEntity.toMoviesGenreListing(): MoviesGenreListing {
             )
         } as MutableList<Result>?,
         totalPages, totalResults
+    )
+}
+
+fun MovieCreditDto.toMoviesCredit() : MovieCredit{
+    return MovieCredit(
+        cast = cast,
+        crew = crew,
+        id
     )
 }
 

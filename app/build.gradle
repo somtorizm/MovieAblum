@@ -98,6 +98,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha03"
     implementation "com.google.accompanist:accompanist-swiperefresh:0.24.2-alpha"
     implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
+    implementation "com.google.accompanist:accompanist-flowlayout:0.24.4-alpha"
 
 
     // Compose Nav Destinations

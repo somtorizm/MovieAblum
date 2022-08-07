@@ -5,16 +5,14 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.vectorinc.vectormoviesearch.data.local.MovieDatabase
-import com.vectorinc.vectormoviesearch.data.mapper.toMoviesDiscover
-import com.vectorinc.vectormoviesearch.data.mapper.toMoviesEntity
-import com.vectorinc.vectormoviesearch.data.mapper.toMoviesGenreListing
-import com.vectorinc.vectormoviesearch.data.mapper.toMoviesTrending
+import com.vectorinc.vectormoviesearch.data.mapper.*
 import com.vectorinc.vectormoviesearch.data.remote.MoviesApi
 import com.vectorinc.vectormoviesearch.domain.model.MoviesDiscover
 import com.vectorinc.vectormoviesearch.domain.model.MoviesGenreListing
 import com.vectorinc.vectormoviesearch.domain.model.Result
 import com.vectorinc.vectormoviesearch.data.pagination.MoviesPagingSource
 import com.vectorinc.vectormoviesearch.data.pagination.TrendingMoviesPagingSource
+import com.vectorinc.vectormoviesearch.domain.model.MovieCredit
 import com.vectorinc.vectormoviesearch.domain.repository.MoviesRepository
 import com.vectorinc.vectormoviesearch.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -135,6 +133,34 @@ class MoviesRepositoryImpl @Inject constructor(
             }
         }
 
+    }
+
+    override suspend fun getMoviesCredit(movieId: Int): Flow<Resource<MovieCredit>> {
+        return flow {
+
+            val remoteMovies = try {
+                api.getMovieCredits(movieId)
+
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                Log.d("Hello", "http erro loading")
+
+                null
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                null
+            }
+            remoteMovies.let {
+                val data = it?.body()?.toMoviesCredit()
+                emit(Resource.Success(data))
+
+            }
+
+
+        }
     }
 
 

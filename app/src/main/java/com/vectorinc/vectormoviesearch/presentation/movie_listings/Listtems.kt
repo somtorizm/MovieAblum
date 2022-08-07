@@ -17,13 +17,12 @@ import androidx.compose.ui.unit.sp
 import com.vectorinc.vectormoviesearch.R
 
 @Composable
-fun listItems(name: String) {
+fun listItems(name: String, modifier: Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(20.dp)
     ) {
 
         Text(

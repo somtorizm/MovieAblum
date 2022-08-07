@@ -1,5 +1,6 @@
 package com.vectorinc.vectormoviesearch.data.remote
 
+import com.vectorinc.vectormoviesearch.data.remote.dto.MovieCreditDto
 import com.vectorinc.vectormoviesearch.data.remote.dto.MoviesDiscoverDto
 import com.vectorinc.vectormoviesearch.data.remote.dto.MoviesGenreListingDto
 import retrofit2.Response
@@ -38,6 +39,14 @@ interface MoviesApi {
         @Path("movie_id") movieID: Int,
         @Query("api_key") apiKey: String = API_KEY,
     ): Response<MoviesDiscoverDto>
+
+    @GET("movie/{movie_id}/credits?")
+    suspend fun getMovieCredits(
+        @Path("movie_id") movieID: Int,
+        @Query("api_key") apiKey: String = API_KEY,
+    ): Response<MovieCreditDto>
+
+
 
 
     companion object {

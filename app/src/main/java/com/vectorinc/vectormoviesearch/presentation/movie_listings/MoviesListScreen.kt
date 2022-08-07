@@ -173,7 +173,7 @@ fun ShowMovies(
                             }
                             Spacer(modifier = Modifier.height(5.dp))
 
-                            listItems(name = "Trending Movies")
+                            listItems(name = "Trending Movies",Modifier.padding(20.dp))
 
                             LazyRow(
                                 modifier = Modifier
@@ -215,7 +215,7 @@ fun ShowMovies(
                                     }
                                 }
                             }
-                            listItems(name = "NowPlaying Movies")
+                            listItems(name = "NowPlaying Movies",Modifier.padding(20.dp))
                             LazyRow(modifier = Modifier.fillMaxWidth()) {
                                 items(state.movies?.result?.size ?: 2) { i ->
                                     Box(

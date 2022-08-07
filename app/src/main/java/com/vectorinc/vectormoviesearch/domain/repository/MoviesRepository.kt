@@ -1,6 +1,7 @@
 package com.vectorinc.vectormoviesearch.domain.repository
 
 import androidx.paging.PagingData
+import com.vectorinc.vectormoviesearch.domain.model.MovieCredit
 import com.vectorinc.vectormoviesearch.domain.model.MoviesDiscover
 import com.vectorinc.vectormoviesearch.domain.model.MoviesGenreListing
 import com.vectorinc.vectormoviesearch.domain.model.Result
@@ -10,18 +11,20 @@ import kotlinx.coroutines.flow.Flow
 interface MoviesRepository {
 
     suspend fun getMoviesGenre(
-        fetchFromRemote : Boolean
+        fetchFromRemote: Boolean
     ): Flow<Resource<MoviesGenreListing>>
-
 
 
     suspend fun getMoviesTrendingPaging(page: Int): Flow<PagingData<Result>>
 
 
-    suspend fun getSearchMovies( searchQuery : String , page: Int
-    ) : Flow<Resource<MoviesGenreListing>>
+    suspend fun getSearchMovies(
+        searchQuery: String, page: Int
+    ): Flow<Resource<MoviesGenreListing>>
 
-    suspend fun getMovieSelected(movieId : Int) : Flow<Resource<MoviesDiscover>>
+    suspend fun getMovieSelected(movieId: Int): Flow<Resource<MoviesDiscover>>
 
     suspend fun getMoviesTrending(fetchFromRemote: Boolean): Flow<Resource<MoviesGenreListing>>
+
+    suspend fun getMoviesCredit(movieId: Int) : Flow<Resource<MovieCredit>>
 }
