@@ -10,7 +10,7 @@ A demo Movie app using compose and Hilt based on modern Android tech-stacks and 
 
 ## Screenshots
 <p align="center">
-<img src="https://i.postimg.cc/507dbRw5/app-mockup-android-screenshot-1-default-1080x1920-1.png" width="270"/>
+<img src="https://i.postimg.cc/vMvSQ9rT/app-mockup-ios-screenshot-1-default-6-5-inch-1.png" width="270"/>
 <img src="https://i.postimg.cc/ZYHFKhvz/app-mockup-android-screenshot-1-default-1080x1920-2.png" width="270"/>
 </br>
 <img src="https://i.postimg.cc/D06ct9LF/app-mockup-android-screenshot-1-default-1080x1920-5.png" width="270"/>
