@@ -17,7 +17,19 @@ A demo Movie app using compose and Hilt based on modern Android tech-stacks and 
 <img src="https://i.postimg.cc/bv11XXfM/app-mockup-android-screenshot-1-default-1080x1920-3.png" width="270"/>
 
 
-
-
-
 </p>
+
+## Tech stack & Open-source libraries
+- Minimum SDK level 21
+- 100% [Kotlin](https://kotlinlang.org/) based + [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) + [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/) for asynchronous.
+- Hilt for dependency injection.
+- JetPack
+  - Compose - A modern toolkit for building native Android UI.
+  - Lifecycle - dispose observing data when lifecycle state changes.
+  - ViewModel - UI related data holder, lifecycle aware.
+  - Room Persistence - construct database.
+  - App Startup - Provides a straightforward, performant way to initialize components at application startup.
+- Architecture
+  - MVVM Architecture (Declarative View - ViewModel - Model)
+  - Repository pattern
+- Material Design & Animations
