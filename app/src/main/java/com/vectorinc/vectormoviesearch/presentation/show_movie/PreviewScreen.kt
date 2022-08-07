@@ -1,13 +1,11 @@
 package com.vectorinc.vectormoviesearch.presentation.show_movie
 
 import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.icons.Icons
@@ -15,12 +13,14 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -87,8 +87,8 @@ fun PreviewScreen(
                 }
                 Column(
                     modifier = Modifier
-                        .verticalScroll(rememberScrollState())
                         .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
                         .windowInsetsPadding(
                             WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
                         )
@@ -105,13 +105,30 @@ fun PreviewScreen(
                         Modifier
                             .fillMaxSize()
                             .padding(15.dp)
-                            .offset(0.dp, (-30).dp))
+                            .offset(0.dp, (-40).dp))
                       {
+                          var isExpanded by remember { mutableStateOf(false) }
                         Text(
                             text = state.movies?.overview ?: "",
                             fontWeight = FontWeight.Normal,
                             fontSize = 15.sp,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.clickable{
+                                isExpanded = !isExpanded
+                            },
+                            maxLines = if (isExpanded) Int.MAX_VALUE else 5,
+
                         )
+                          Text(
+                              text = if(isExpanded)  "Read less" else "Read more",
+                              fontWeight = FontWeight.Normal,
+                              fontSize = 15.sp,
+                              color = MaterialTheme.colors.secondary,
+                              modifier = Modifier.clickable{
+                                  isExpanded = !isExpanded
+                              },
+
+                              )
                         Spacer(modifier = Modifier.height(10.dp))
                         if (state.movieCategories.isNotEmpty()) {
                             MovieCategoryTabs(
@@ -124,10 +141,18 @@ fun PreviewScreen(
                         when (state.selectedMovieCategory) {
                             PreviewViewModel.MovieCategory.Cast -> {
                                 // TODO
+                                Spacer(modifier = Modifier.height(10.dp))
+                                repeat(5){
+                                    CastItem()
+                                }
                                 Log.d("Cast", "Preview")
 
                             }
                             PreviewViewModel.MovieCategory.Crew -> {
+                                Column(Modifier.fillMaxSize()) {
+
+                                }
+
                                 Log.d("Crew", "Preview")
                             }
                         }
@@ -160,7 +185,7 @@ private fun MovieCategoryTabs(
     TabRow(
         selectedTabIndex = selectedIndex,
         indicator = indicator,
-        modifier = modifier.background(Color.Transparent)
+        backgroundColor = Color.Transparent
     ) {
         categories.forEachIndexed { index, category ->
             Tab(
@@ -183,7 +208,7 @@ private fun MovieCategoryTabs(
 @Composable
 fun MovieCategoryTabIndicator(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.onSurface
+    color: Color = MaterialTheme.colors.primary
 ) {
     Spacer(
         modifier
@@ -319,19 +344,28 @@ fun TitleBody(movieUrlImage: Painter, viewModel: PreviewViewModel) {
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = state.movies?.status ?: "",
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 8.sp,
-                color = Color.White,
-                modifier = Modifier
-                    .background(
-                        MaterialTheme.colors.primary,
-                        RoundedCornerShape(30)
-                    )
-                    .padding(9.dp)
+            Row(verticalAlignment = Alignment.CenterVertically){
+                Text(
+                    text = state.movies?.status ?: "",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 8.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colors.primary,
+                            RoundedCornerShape(30)
+                        )
+                        .padding(9.dp)
 
-            )
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = "${state.movies?.runtime}" + " Mins",
+                    fontWeight = FontWeight.Thin,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
             Spacer(modifier = Modifier.height(10.dp))
 
 
@@ -360,6 +394,22 @@ fun TitleBody(movieUrlImage: Painter, viewModel: PreviewViewModel) {
 
 
     }
+}
+
+@Composable
+fun CastItem(){
+    Spacer(modifier = Modifier.height(10.dp))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Image(painter = painterResource(id = R.drawable.profile), contentDescription ="Image",
+            Modifier
+                .clip(CircleShape)
+                .size(70.dp))
+        Spacer(modifier = Modifier.width(15.dp))
+        Text(text = "Ezinwa Victor", fontSize = 15.sp)
+
+    }
+
+
 }
 
 

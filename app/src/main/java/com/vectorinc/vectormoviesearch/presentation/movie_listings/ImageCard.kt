@@ -2,6 +2,7 @@ package com.vectorinc.vectormoviesearch.presentation.movie_listings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -17,6 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.vectorinc.vectormoviesearch.presentation.destinations.PreviewScreenDestination
 import com.vectorinc.vectormoviesearch.ui.theme.DarkBlue
 
 @Composable
@@ -26,9 +29,13 @@ fun ImageCard(
     movieTitle: String,
     movieOriginalTitle : String,
     voteRate: Double,
+    navigator: DestinationsNavigator,
+    movieID : Int
 
     ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxWidth().clickable {
+        navigator.navigate(PreviewScreenDestination(movieID))
+    }) {
        Box() {
            Card(
                modifier = modifier.fillMaxWidth(),
@@ -37,7 +44,7 @@ fun ImageCard(
            ) {
                Box(
                    modifier = Modifier
-                       .height(200.dp)
+                       .height(250.dp)
                        .width(170.dp)
                ) {
                    Image(
@@ -68,7 +75,7 @@ fun ImageCard(
            Box(
                modifier = Modifier
                    .fillMaxWidth()
-                   .height(200.dp),
+                   .height(250.dp),
                contentAlignment = Alignment.BottomEnd
            ) {
                RatingBarItem(
@@ -92,7 +99,7 @@ fun ImageCard(
                 .width(170.dp),
             overflow = TextOverflow.Ellipsis,
             fontSize = 12.sp,
-            maxLines = 1,
+            maxLines = 2,
             color = Color.Gray
         )
     }

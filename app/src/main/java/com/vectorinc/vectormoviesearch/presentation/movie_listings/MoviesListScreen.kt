@@ -9,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -25,6 +26,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.vectorinc.vectormoviesearch.R
 import com.vectorinc.vectormoviesearch.presentation.MovieAppState
 import com.vectorinc.vectormoviesearch.presentation.OfflineDialog
 import com.vectorinc.vectormoviesearch.presentation.destinations.SearchDestination
@@ -114,15 +116,12 @@ fun ShowMovies(
                     TopAppBar(
                         elevation = 0.dp,
                         title = {
-                            Row {
-                                Image(
-                                    painter = painterResource(com.vectorinc.vectormoviesearch.R.drawable.logo),
-                                    contentDescription = stringResource(com.vectorinc.vectormoviesearch.R.string.app_name),
-                                    modifier = Modifier.fillMaxWidth(0.5f),
-                                    contentScale = ContentScale.Crop
-
-                                )
-                            }
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_creaview),
+                                contentDescription = stringResource(R.string.search),
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.offset((-25).dp,0.dp)
+                            )
                         },
 
                         backgroundColor = appBarColor,
@@ -138,8 +137,9 @@ fun ShowMovies(
                                 }
                             }
                         },
-                        modifier = Modifier
+                        modifier = Modifier.padding(5.dp)
                     )
+                    Spacer(modifier = Modifier.height(5.dp))
 
                     SwipeRefresh(state = swipeRefreshState, onRefresh = {
                         viewModel.onEvent(MoviesListingEvent.Refresh)
@@ -149,7 +149,7 @@ fun ShowMovies(
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState())
                         ) {
-                            Spacer(modifier = Modifier.height(15.dp))
+
                             if (state.movies != null) {
 
                                 val imageUrl = state.movies.result?.get(0)?.imagePoster
@@ -200,13 +200,16 @@ fun ShowMovies(
                                             val movieOrginalTitle = movie?.titleOriginal
 
                                             val voteRate = movie?.voteAverage ?: 0.0
+                                            val id  = movie?.id ?: 0
 
                                             ImageCard(
                                                 painter = movieUrl,
                                                 movieTitle = movieTitle.toString(),
                                                 modifier = Modifier,
                                                 voteRate = voteRate,
-                                                movieOriginalTitle = movieOrginalTitle.toString()
+                                                movieOriginalTitle = movieOrginalTitle.toString(),
+                                                navigator = navigator,
+                                                movieID = id
                                             )
                                         }
                                     }
@@ -231,13 +234,17 @@ fun ShowMovies(
                                             state.movies?.result?.get(i)?.voteAverage ?: 0.0
                                         val movieOrginalTitle =
                                             state.movies?.result?.get(i)?.titleOriginal
+                                        val id  = state.movies?.result?.get(i)?.id ?: 0
+
 
                                         ImageCard(
                                             painter = movieUrl,
                                             movieTitle = movieTitle.toString(),
                                             modifier = Modifier,
                                             voteRate = voteRate,
-                                            movieOriginalTitle = movieOrginalTitle.toString()
+                                            movieOriginalTitle = movieOrginalTitle.toString(),
+                                            navigator = navigator,
+                                            movieID = id
                                         )
                                     }
                                 }

@@ -68,8 +68,8 @@ fun ImageCardRow(
             ) {
                 Box(
                     modifier = Modifier
-                        .height(200.dp)
-                        .width(250.dp)
+                        .height(250.dp)
+                        .width(200.dp)
                 ) {
                     Image(
                         modifier = Modifier.fillMaxWidth(),
@@ -99,7 +99,7 @@ fun ImageCardRow(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp),
+                    .height(250.dp),
                 contentAlignment = Alignment.BottomEnd
             ) {
                 RatingBarItem(
