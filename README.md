@@ -14,9 +14,6 @@ A demo Movie app using compose and Hilt based on modern Android tech-stacks and 
 <img src="https://i.postimg.cc/mTNCy4gx/app-mockup-ios-screenshot-1-default-6-5-inch-3.png" width="270"/>
 </br>
 <img src="https://i.postimg.cc/2CBXkVGQ/app-mockup-ios-screenshot-1-default-6-5-inch-2.png" width="270"/>
-<img src="" width="270"/>
-
-
 </p>
 
 ## Tech stack & Open-source libraries
