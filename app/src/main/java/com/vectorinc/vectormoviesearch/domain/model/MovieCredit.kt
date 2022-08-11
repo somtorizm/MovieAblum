@@ -10,21 +10,21 @@ data class Crew(
     val adult: Boolean,
     val credit_id: String,
     val department: String,
-    val gender: Int?,
+    val gender: Int?= null,
     val id: Int,
     val job: String,
     val known_for_department: String,
     val name: String,
     val original_name: String,
     val popularity: Double,
-    val profile_path: Any?
+    val profile_path: Any?=null
 )
 
 data class Cast(
     val adult: Boolean,
     val cast_id: Int,
     val character: String,
-    val credit_id: String?,
+    val credit_id: String? = null,
     val gender: Int?,
     val id: Int,
     val known_for_department: String,
@@ -32,5 +32,5 @@ data class Cast(
     val order: Int,
     val original_name: String,
     val popularity: Double,
-    val profile_path: String?
+    val profile_path: String?= null
 )

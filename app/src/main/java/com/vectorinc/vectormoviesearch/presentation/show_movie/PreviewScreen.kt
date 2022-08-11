@@ -14,10 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,15 +34,10 @@ import com.vectorinc.vectormoviesearch.domain.model.MovieCredit
 import com.vectorinc.vectormoviesearch.domain.model.ThumbNail
 import com.vectorinc.vectormoviesearch.presentation.OfflineDialog
 import com.vectorinc.vectormoviesearch.presentation.movie_listings.RatingBarItem
-import com.vectorinc.vectormoviesearch.presentation.movie_listings.listItems
 import com.vectorinc.vectormoviesearch.presentation.search_screen.Loading
-import com.vectorinc.vectormoviesearch.ui.theme.DarkBlue
 import com.vectorinc.vectormoviesearch.ui.theme.DarkDimLight
 import com.vectorinc.vectormoviesearch.ui.theme.MinContrastOfPrimaryVsSurface
-import com.vectorinc.vectormoviesearch.util.DynamicThemePrimaryColorsFromImage
-import com.vectorinc.vectormoviesearch.util.contrastAgainst
-import com.vectorinc.vectormoviesearch.util.rememberDominantColorState
-import com.vectorinc.vectormoviesearch.util.verticalGradientScrim
+import com.vectorinc.vectormoviesearch.util.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -62,10 +57,28 @@ fun PreviewScreen(
         Loading()
     } else {
         if (state.error == true) {
-            OfflineDialog {
-                viewModel.onEvent(PreviewEvents.Refresh)
-            }
+            OfflineDialog(title = stringResource(id = R.string.connection_error_title),
+                message = stringResource(
+                    id = R.string.connection_error_message
+                ),
+                onRetry = {
+                    viewModel.onEvent(PreviewEvents.Refresh)
+                }, navigator = navigator , onBack = {
+                    navigator.popBackStack()
+
+                })
         } else {
+            if (state.movies == null){
+                OfflineDialog(title = stringResource(id = R.string.movie_unavailable),
+                    message = stringResource(
+                        id = R.string.movie_unavailable_message
+                    ),
+                    onRetry = {
+                        viewModel.onEvent(PreviewEvents.Refresh)
+                    }, navigator = navigator, onBack = {
+                        navigator.popBackStack()
+                    })
+            }
 
             val movieUrlBackDrop =
                 rememberAsyncImagePainter(
@@ -171,9 +184,6 @@ fun PreviewScreen(
                         MovieTrailers(thumbNail = state.thumbNails)
 
 
-
-
-
                         /*
                         Row(verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween) {
@@ -188,7 +198,6 @@ fun PreviewScreen(
                                 color = MaterialTheme.colors.secondary
                             )
                         } */
-
 
 
                         /*
@@ -277,11 +286,7 @@ fun MovieCategoryTabIndicator(
     )
 }
 
-fun convertToDate(date: String): String {
-    if (date.toString().isBlank()) return ""
-    val date = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-    return "${date.month}" + " " + "${date.year}"
-}
+
 
 @Composable
 fun AppBar(movieUrlBackDrop: Painter, navigator: DestinationsNavigator) {
@@ -418,8 +423,9 @@ fun TitleBody(movieUrlImage: Painter, viewModel: PreviewViewModel) {
 
                 )
                 Spacer(modifier = Modifier.width(10.dp))
+                val mins = if (state.movies?.runtime != null) state.movies.runtime else 0
                 Text(
-                    text = "${state.movies?.runtime}" + " Mins",
+                    text = "$mins Mins",
                     fontWeight = FontWeight.Thin,
                     fontSize = 12.sp,
                     color = MaterialTheme.colors.secondary
@@ -456,7 +462,7 @@ fun TitleBody(movieUrlImage: Painter, viewModel: PreviewViewModel) {
 }
 
 @Composable
-fun CastItem(name: String, pic: AsyncImagePainter,character :String) {
+fun CastItem(name: String, pic: AsyncImagePainter, character: String) {
     Spacer(modifier = Modifier.height(10.dp))
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
@@ -468,7 +474,7 @@ fun CastItem(name: String, pic: AsyncImagePainter,character :String) {
         Spacer(modifier = Modifier.height(5.dp))
         Text(text = name, fontSize = 8.sp)
         Spacer(modifier = Modifier.height(5.dp))
-        Text(text = character , fontSize = 8.sp, color = MaterialTheme.colors.secondary)
+        Text(text = character, fontSize = 8.sp, color = MaterialTheme.colors.secondary)
 
     }
 
@@ -499,7 +505,7 @@ fun ItemCast(moviesCredit: MovieCredit?) {
 }
 
 @Composable
-fun MovieTrailers(thumbNail: ThumbNail?){
+fun MovieTrailers(thumbNail: ThumbNail?) {
     val size = thumbNail?.results?.size ?: 0
     val item = thumbNail?.results
 
@@ -510,14 +516,14 @@ fun MovieTrailers(thumbNail: ThumbNail?){
     ) {
         items(size) { i ->
             item?.get(i).let {
-                if(it?.site == "YouTube"){
+                if (it?.site == "YouTube") {
                     val pic =
                         rememberAsyncImagePainter(
                             "https://img.youtube.com/vi/" + it?.key + "/maxresdefault.jpg"
                         )
-                    Log.d("Key",it?.key.toString())
+                    Log.d("Key", it?.key.toString())
 
-                    ShowThumbNail(painter = pic)
+                    ShowThumbNail(painter = pic, it.key)
                 }
 
 
@@ -543,45 +549,49 @@ fun ItemCrew(moviesCredit: MovieCredit?) {
                     rememberAsyncImagePainter(
                         "https://image.tmdb.org/t/p/original" + item?.get(i)?.profile_path
                     )
-                CastItem(name = item?.get(i)?.name ?: "", pic = pic,"")
+                CastItem(name = item?.get(i)?.name ?: "", pic = pic, "")
 
             }
         }
     }
 }
 
-@Composable
-fun ShowMoviesTrailer(){
-}
 
 @Composable
-fun ShowThumbNail(painter : Painter){
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp),
-            elevation = 5.dp
+fun ShowThumbNail(painter: Painter, key: String) {
+    val context = LocalContext.current
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                watchYoutubeVideo(context, key)
+            },
+        shape = RoundedCornerShape(15.dp),
+        elevation = 5.dp
+    ) {
+        Box(
+            modifier = Modifier
+                .height(230.dp)
+                .width(170.dp)
         ) {
-            Box(
+            Image(
+                painter = painter,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+            Image(
+                painter = painterResource(id = R.drawable.ic_icons8_youtube),
+                contentDescription = null,
                 modifier = Modifier
-                    .height(230.dp)
-                    .width(170.dp)
-            ) {
-                Image(
-                    painter = painter,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.ic_icons8_youtube),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxWidth().align(Alignment.Center),
+                    .fillMaxWidth()
+                    .align(Alignment.Center),
 
                 )
-
-            }
 
         }
+
+    }
 
 }
 

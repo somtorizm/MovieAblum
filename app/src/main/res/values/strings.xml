@@ -2,8 +2,13 @@
     <string name="app_name">CreaView</string>
     <string name="search">Search</string>
     <string name="connection_error_title">Connection error</string>
+    <string name="movie_unavailable">Movie Unavailable</string>
+    <string name="movie_unavailable_message">Unable to find Movie.\nCheck your internet connection or try again.</string>
+
     <string name="connection_error_message">Unable to fetch Movie feeds.\nCheck your internet connection and try again.</string>
     <string name="retry_label">Retry</string>
+    <string name="back_label">Back</string>
+
     <string name="cast">Cast</string>
     <string name="crew">Crew</string>
 

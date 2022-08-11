@@ -34,6 +34,7 @@ import com.vectorinc.vectormoviesearch.presentation.destinations.ShowMoviesDesti
 import com.vectorinc.vectormoviesearch.presentation.rememberMoviesAppState
 import com.vectorinc.vectormoviesearch.presentation.search_screen.Loading
 import com.vectorinc.vectormoviesearch.presentation.search_screen.Search
+import com.vectorinc.vectormoviesearch.presentation.show_movie.PreviewEvents
 import com.vectorinc.vectormoviesearch.ui.theme.MinContrastOfPrimaryVsSurface
 import com.vectorinc.vectormoviesearch.util.DynamicThemePrimaryColorsFromImage
 import com.vectorinc.vectormoviesearch.util.contrastAgainst
@@ -61,9 +62,15 @@ fun ShowMovies(
 
 
     if (!appState.isOnline) {
-        OfflineDialog {
-            navigator.navigate(ShowMoviesDestination)
-        }
+        OfflineDialog(title = stringResource(id = R.string.connection_error_title),
+            message = stringResource(
+                id = R.string.connection_error_message
+            ),
+            onRetry = {
+                navigator.navigate(ShowMoviesDestination)
+            }, navigator = navigator, onBack = {
+                //TODO
+            })
 
     } else {
         if (!state.isLoading) {
