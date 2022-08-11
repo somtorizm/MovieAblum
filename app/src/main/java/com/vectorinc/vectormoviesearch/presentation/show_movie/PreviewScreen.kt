@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -30,10 +31,12 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.vectorinc.vectormoviesearch.R
 import com.vectorinc.vectormoviesearch.domain.model.MovieCredit
+import com.vectorinc.vectormoviesearch.domain.model.ThumbNail
 import com.vectorinc.vectormoviesearch.presentation.OfflineDialog
 import com.vectorinc.vectormoviesearch.presentation.movie_listings.RatingBarItem
 import com.vectorinc.vectormoviesearch.presentation.movie_listings.listItems
 import com.vectorinc.vectormoviesearch.presentation.search_screen.Loading
+import com.vectorinc.vectormoviesearch.ui.theme.DarkBlue
 import com.vectorinc.vectormoviesearch.ui.theme.DarkDimLight
 import com.vectorinc.vectormoviesearch.ui.theme.MinContrastOfPrimaryVsSurface
 import com.vectorinc.vectormoviesearch.util.DynamicThemePrimaryColorsFromImage
@@ -158,6 +161,16 @@ fun PreviewScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                         ItemCrew(moviesCredit = state.moviesCredit)
                         Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            text = "Movie Trailer",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        MovieTrailers(thumbNail = state.thumbNails)
+
+
 
 
 
@@ -486,6 +499,35 @@ fun ItemCast(moviesCredit: MovieCredit?) {
 }
 
 @Composable
+fun MovieTrailers(thumbNail: ThumbNail?){
+    val size = thumbNail?.results?.size ?: 0
+    val item = thumbNail?.results
+
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        items(size) { i ->
+            item?.get(i).let {
+                if(it?.site == "YouTube"){
+                    val pic =
+                        rememberAsyncImagePainter(
+                            "https://img.youtube.com/vi/" + it?.key + "/maxresdefault.jpg"
+                        )
+                    Log.d("Key",it?.key.toString())
+
+                    ShowThumbNail(painter = pic)
+                }
+
+
+            }
+
+        }
+    }
+}
+
+@Composable
 fun ItemCrew(moviesCredit: MovieCredit?) {
     val size = moviesCredit?.crew?.size ?: 0
     val item = moviesCredit?.crew
@@ -510,6 +552,36 @@ fun ItemCrew(moviesCredit: MovieCredit?) {
 
 @Composable
 fun ShowMoviesTrailer(){
+}
+
+@Composable
+fun ShowThumbNail(painter : Painter){
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(15.dp),
+            elevation = 5.dp
+        ) {
+            Box(
+                modifier = Modifier
+                    .height(230.dp)
+                    .width(170.dp)
+            ) {
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_icons8_youtube),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth().align(Alignment.Center),
+
+                )
+
+            }
+
+        }
 
 }
 
