@@ -134,15 +134,21 @@ fun PreviewScreen(
 
                             )
                         Spacer(modifier = Modifier.height(10.dp))
+
                         Text(
                             text = "Cast",
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp,
                             color = Color.White
                         )
+
                         Spacer(modifier = Modifier.height(10.dp))
+
                         ItemCast(moviesCredit = state.moviesCredit)
                         Spacer(modifier = Modifier.height(10.dp))
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
                         Text(
                             text = "Crew",
                             fontWeight = FontWeight.Bold,
@@ -151,6 +157,24 @@ fun PreviewScreen(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         ItemCrew(moviesCredit = state.moviesCredit)
+                        Spacer(modifier = Modifier.height(10.dp))
+
+
+
+                        /*
+                        Row(verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(
+                                text = "Original Title",
+                                fontSize = 15.sp,
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                text = state.movies?.original_title ?: "",
+                                fontSize =  15.sp,
+                                color = MaterialTheme.colors.secondary
+                            )
+                        } */
 
 
 
@@ -483,6 +507,13 @@ fun ItemCrew(moviesCredit: MovieCredit?) {
         }
     }
 }
+
+@Composable
+fun ShowMoviesTrailer(){
+
+}
+
+
 
 
 

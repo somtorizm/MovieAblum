@@ -1,7 +1,5 @@
 package com.vectorinc.vectormoviesearch.domain.model
 
-import com.vectorinc.vectormoviesearch.data.remote.dto.Cast
-import com.vectorinc.vectormoviesearch.data.remote.dto.Crew
 
 data class MovieCredit(
     val cast: List<Cast>,

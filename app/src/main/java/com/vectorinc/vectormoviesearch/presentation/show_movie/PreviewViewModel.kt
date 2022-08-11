@@ -32,6 +32,7 @@ class PreviewViewModel @Inject constructor(
     init {
         getPreviewMovies()
         getMovieCredit()
+        getMoviesThumbNail()
         state = state.copy(
             movieCategories = categories,
             selectedMovieCategory = selectedCategory,
@@ -98,6 +99,34 @@ class PreviewViewModel @Inject constructor(
 
 
         }
+    }
+
+    fun getMoviesThumbNail(){
+        viewModelScope.launch {
+            val movieId = savedStateHandle.get<Int>("movieID") ?: return@launch
+            repository.getThumbNail(movieId).collect {
+                when (it) {
+                    is Resource.Error -> {
+                        Log.d("View Model State", "Error")
+
+
+                    }
+                    is Resource.Success -> {
+                        state = state.copy(thumbNails = it.data)
+                        Log.d("View Model State", "Successful")
+
+
+                    }
+                    is Resource.isLoading -> {
+                        Log.d("View Model State", "Loading")
+                    }
+                }
+            }
+
+
+
+        }
+
     }
 
     fun onEvent(event: PreviewEvents) {
