@@ -3,11 +3,13 @@ package com.vectorinc.vectormoviesearch.data.mapper
 
 import com.vectorinc.vectormoviesearch.data.local.MoviesEntity
 import com.vectorinc.vectormoviesearch.data.local.MoviesTrendingEntity
-import com.vectorinc.vectormoviesearch.data.remote.dto.MovieCreditDto
-import com.vectorinc.vectormoviesearch.data.remote.dto.MoviesDiscoverDto
-import com.vectorinc.vectormoviesearch.data.remote.dto.MoviesGenreListingDto
-import com.vectorinc.vectormoviesearch.data.remote.dto.ThumbNailDto
+import com.vectorinc.vectormoviesearch.data.remote.dto.*
 import com.vectorinc.vectormoviesearch.domain.model.*
+import com.vectorinc.vectormoviesearch.domain.model.Cast
+import com.vectorinc.vectormoviesearch.domain.model.Crew
+import com.vectorinc.vectormoviesearch.domain.model.Result
+import com.vectorinc.vectormoviesearch.domain.model.ResultReview
+import com.vectorinc.vectormoviesearch.domain.model.ResultThumbNail
 
 
 fun MoviesGenreListingDto.toMoviesEntity(): MoviesEntity {
@@ -187,6 +189,29 @@ fun MovieCreditDto.toMoviesCredit(): MovieCredit {
             )
         },
         id
+    )
+}
+
+fun ReviewDto.toReview(): Review {
+
+    return Review(
+        id, page, results.map {
+            val authorDetail = AuthorDetail(
+                it.author_details.avatar_path,
+                it.author_details.name,
+                it.author_details.rating,
+                it.author_details.username
+            )
+            ResultReview(
+                it.author,
+                authorDetail,
+                it.content,
+                it.created_at,
+                it.id,
+                it.updated_at,
+                it.url
+            )
+        }, total_pages, total_results
     )
 }
 

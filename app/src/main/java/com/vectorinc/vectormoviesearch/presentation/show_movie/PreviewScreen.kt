@@ -17,10 +17,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -443,6 +445,7 @@ fun TitleBody(movieUrlImage: Painter, viewModel: PreviewViewModel) {
                     modifier = Modifier.size(35.dp)
                 )
                 Spacer(modifier = Modifier.width(10.dp))
+
                 RatingBarItem(
                     voteRate = state.movies?.vote_average ?: 0.0,
                     number = 100,
@@ -451,6 +454,10 @@ fun TitleBody(movieUrlImage: Painter, viewModel: PreviewViewModel) {
                     fontSize = 10.sp,
                     modifier = Modifier
                 )
+                Spacer(modifier = Modifier.width(10.dp))
+                CommentNumber()
+
+
             }
             Spacer(modifier = Modifier.height(5.dp))
 
@@ -495,7 +502,9 @@ fun ItemCast(moviesCredit: MovieCredit?) {
             item?.get(i).let {
                 val pic =
                     rememberAsyncImagePainter(
-                        "https://image.tmdb.org/t/p/original" + item?.get(i)?.profile_path
+                        "https://image.tmdb.org/t/p/original" + item?.get(i)?.profile_path, error =  painterResource(
+                            id = R.drawable.placeholder
+                        )
                     )
                 CastItem(name = item?.get(i)?.name ?: "", pic = pic, it?.character ?: "")
 
@@ -520,7 +529,7 @@ fun MovieTrailers(thumbNail: ThumbNail?) {
                     val pic =
                         rememberAsyncImagePainter(
                             "https://img.youtube.com/vi/" + it?.key + "/maxresdefault.jpg"
-                        )
+                        , error = painterResource(id = R.drawable.video_placeholder))
                     Log.d("Key", it?.key.toString())
 
                     ShowThumbNail(painter = pic, it.key)
@@ -531,6 +540,55 @@ fun MovieTrailers(thumbNail: ThumbNail?) {
 
         }
     }
+}
+
+@Composable
+fun CommentNumber(){
+    Box() {
+
+
+        Image(
+            painter = painterResource(id = R.drawable.chat),
+            contentDescription = stringResource(com.vectorinc.vectormoviesearch.R.string.search),
+            modifier = Modifier
+                .size(35.dp)
+                .offset((10).dp, 0.dp)
+
+        )
+
+        Box(contentAlignment= Alignment.Center,
+            modifier = Modifier
+                .background(Color.Red, shape = CircleShape)
+                .size(20.dp)
+                .layout() { measurable, constraints ->
+                    // Measure the composable
+                    val placeable = measurable.measure(constraints)
+
+                    //get the current max dimension to assign width=height
+                    val currentHeight = placeable.height
+                    var heightCircle = currentHeight
+                    if (placeable.width > heightCircle)
+                        heightCircle = placeable.width
+
+                    //assign the dimension and the center position
+                    layout(heightCircle, heightCircle) {
+                        // Where the composable gets placed
+                        placeable.placeRelative(0, (heightCircle - currentHeight) / 2)
+                    }
+                }) {
+
+            Text(
+                text = "2",
+                fontSize = 10.sp,
+                textAlign = TextAlign.Center,
+                color = Color.White,
+
+                modifier = Modifier //Use a min size for short text.
+            )
+        }
+    }
+
+
 }
 
 @Composable
@@ -548,6 +606,7 @@ fun ItemCrew(moviesCredit: MovieCredit?) {
                 val pic =
                     rememberAsyncImagePainter(
                         "https://image.tmdb.org/t/p/original" + item?.get(i)?.profile_path
+                    , error = painterResource(id = R.drawable.placeholder)
                     )
                 CastItem(name = item?.get(i)?.name ?: "", pic = pic, "")
 

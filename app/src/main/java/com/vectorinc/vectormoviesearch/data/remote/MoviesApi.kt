@@ -1,9 +1,6 @@
 package com.vectorinc.vectormoviesearch.data.remote
 
-import com.vectorinc.vectormoviesearch.data.remote.dto.MovieCreditDto
-import com.vectorinc.vectormoviesearch.data.remote.dto.MoviesDiscoverDto
-import com.vectorinc.vectormoviesearch.data.remote.dto.MoviesGenreListingDto
-import com.vectorinc.vectormoviesearch.data.remote.dto.ThumbNailDto
+import com.vectorinc.vectormoviesearch.data.remote.dto.*
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -54,7 +51,11 @@ interface MoviesApi {
         @Query("api_key") apiKey: String = API_KEY,
     ): Response<ThumbNailDto>
 
-
+    @GET("movie/{movie_id}/review?")
+    suspend fun getReviews(
+        @Path("movie_id") movieID: Int,
+        @Query("api_key") apiKey: String = API_KEY,
+    ): Response<ReviewDto>
 
 
     companion object {
