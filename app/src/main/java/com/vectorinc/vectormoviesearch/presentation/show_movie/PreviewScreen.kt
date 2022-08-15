@@ -37,11 +37,11 @@ import com.vectorinc.vectormoviesearch.domain.model.ThumbNail
 import com.vectorinc.vectormoviesearch.presentation.OfflineDialog
 import com.vectorinc.vectormoviesearch.presentation.movie_listings.RatingBarItem
 import com.vectorinc.vectormoviesearch.presentation.search_screen.Loading
+import com.vectorinc.vectormoviesearch.ui.theme.DarkBlue
 import com.vectorinc.vectormoviesearch.ui.theme.DarkDimLight
+import com.vectorinc.vectormoviesearch.ui.theme.DarkGrayLight
 import com.vectorinc.vectormoviesearch.ui.theme.MinContrastOfPrimaryVsSurface
 import com.vectorinc.vectormoviesearch.util.*
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Destination
 @Composable
@@ -455,7 +455,8 @@ fun TitleBody(movieUrlImage: Painter, viewModel: PreviewViewModel) {
                     modifier = Modifier
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                CommentNumber()
+                Log.d("Comment", "${state.reviews?.id}")
+                CommentNumber(state)
 
 
             }
@@ -543,7 +544,7 @@ fun MovieTrailers(thumbNail: ThumbNail?) {
 }
 
 @Composable
-fun CommentNumber(){
+fun CommentNumber(state: PreviewListingState) {
     Box() {
 
 
@@ -558,7 +559,7 @@ fun CommentNumber(){
 
         Box(contentAlignment= Alignment.Center,
             modifier = Modifier
-                .background(Color.Red, shape = CircleShape)
+                .background(Color.DarkGray, shape = CircleShape)
                 .size(20.dp)
                 .layout() { measurable, constraints ->
                     // Measure the composable
@@ -578,10 +579,9 @@ fun CommentNumber(){
                 }) {
 
             Text(
-                text = "2",
+                text =  "${state.reviews?.results?.size ?: 0}",
                 fontSize = 10.sp,
                 textAlign = TextAlign.Center,
-                color = Color.White,
 
                 modifier = Modifier //Use a min size for short text.
             )

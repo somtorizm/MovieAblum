@@ -200,32 +200,30 @@ fun SearchMovies(
             when {
                 loadState.refresh is
                         LoadState.Loading -> {
-                    repeat(3) {
-                        item { LoadingItem(visible = true) }
-                    }
 
 
                 }
 
                 loadState.append is
                         LoadState.Loading -> {
-                    repeat(1) {
-                        item { LoadingItem(visible = true) }
+                    item { LoadingItem(visible = true) }
 
-                    }
+
                 }
                 loadState.refresh is
                         LoadState.Error -> {
-                    item { LoadingItem(false) }
+
                 }
                 loadState.append is
                         LoadState.Error -> {
-                    item { LoadingItem(false) }
+                    item { LoadingItem(visible = false) }
+
 
                 }
                 loadState.append is
                         LoadState.NotLoading -> {
-                    item { LoadingItem(false) }
+                    item { LoadingItem(visible = false) }
+
                 }
             }
         }

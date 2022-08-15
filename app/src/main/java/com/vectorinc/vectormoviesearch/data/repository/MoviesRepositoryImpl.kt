@@ -189,6 +189,35 @@ class MoviesRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun getReview(movieId: Int): Flow<Resource<Review>> {
+        return flow {
+
+            val remoteMovies = try {
+                api.getReviews(movieId)
+
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                Log.d("Hello", "http error loading")
+
+                null
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                null
+            }
+            remoteMovies.let {
+                val data = it?.body()?.toReview()
+                emit(Resource.Success(data))
+
+            }
+
+
+        }
+
+    }
+
 
     override suspend fun getSearchMovies(
         searchQuery: String,

@@ -33,6 +33,7 @@ class PreviewViewModel @Inject constructor(
         getPreviewMovies()
         getMovieCredit()
         getMoviesThumbNail()
+        getReviews()
         state = state.copy(
             movieCategories = categories,
             selectedMovieCategory = selectedCategory,
@@ -74,7 +75,28 @@ class PreviewViewModel @Inject constructor(
         }
     }
 
-    fun getMovieCredit(){
+    fun getReviews() {
+        viewModelScope.launch {
+            val movieId = savedStateHandle.get<Int>("movieID") ?: return@launch
+            repository.getReview(movieId).collect {
+                when (it) {
+                    is Resource.Error -> {
+
+                    }
+                    is Resource.Success -> {
+                        state = state.copy(reviews = it.data)
+
+
+                    }
+                    is Resource.isLoading -> {
+                    }
+                }
+            }
+
+        }
+    }
+
+    private fun getMovieCredit() {
         viewModelScope.launch {
             val movieId = savedStateHandle.get<Int>("movieID") ?: return@launch
             repository.getMoviesCredit(movieId).collect {
@@ -97,11 +119,10 @@ class PreviewViewModel @Inject constructor(
             }
 
 
-
         }
     }
 
-    fun getMoviesThumbNail(){
+    private fun getMoviesThumbNail() {
         viewModelScope.launch {
             val movieId = savedStateHandle.get<Int>("movieID") ?: return@launch
             repository.getThumbNail(movieId).collect {
@@ -122,7 +143,6 @@ class PreviewViewModel @Inject constructor(
                     }
                 }
             }
-
 
 
         }

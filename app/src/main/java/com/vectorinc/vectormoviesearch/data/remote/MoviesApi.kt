@@ -51,7 +51,7 @@ interface MoviesApi {
         @Query("api_key") apiKey: String = API_KEY,
     ): Response<ThumbNailDto>
 
-    @GET("movie/{movie_id}/review?")
+    @GET("movie/{movie_id}/reviews?")
     suspend fun getReviews(
         @Path("movie_id") movieID: Int,
         @Query("api_key") apiKey: String = API_KEY,

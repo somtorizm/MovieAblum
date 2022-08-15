@@ -19,8 +19,8 @@ data class ResultReview(
 )
 
 data class AuthorDetail(
-    val avatar_path: String,
+    val avatar_path: String? = null,
     val name: String,
-    val rating: Any,
+    val rating: Any?= null,
     val username: String
 )
