@@ -133,12 +133,13 @@ fun ShowMovies(
 
                         backgroundColor = appBarColor,
                         actions = {
-                            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                                 IconButton(
                                     onClick = { navigator.navigate(SearchDestination) }
                                 ) {
                                     Icon(
                                         imageVector = Icons.Filled.Search,
+                                        modifier = Modifier.size(35.dp),
                                         contentDescription = stringResource(com.vectorinc.vectormoviesearch.R.string.search)
                                     )
                                 }
