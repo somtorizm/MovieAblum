@@ -44,8 +44,8 @@ fun ImageCard(
            ) {
                Box(
                    modifier = Modifier
-                       .height(250.dp)
-                       .width(170.dp)
+                       .height(170.dp)
+                       .width(120.dp)
                ) {
                    Image(
                        painter = painter,
@@ -60,7 +60,7 @@ fun ImageCard(
                                Brush.verticalGradient(
                                    listOf(
                                        Color.Transparent,
-                                       DarkBlue,
+                                       Color.Transparent,
                                    ),
                                    startY = 200f
 
@@ -75,15 +75,15 @@ fun ImageCard(
            Box(
                modifier = Modifier
                    .fillMaxWidth()
-                   .height(250.dp),
+                   .height(170.dp),
                contentAlignment = Alignment.BottomEnd
            ) {
                RatingBarItem(
                    voteRate = voteRate,
                    number = 100,
-                   radius = 12.dp,
+                   radius = 10.dp,
                    color = Color.Yellow,
-                   fontSize = 10.sp,
+                   fontSize = 8.sp,
                    modifier = Modifier
                )
            }
@@ -95,8 +95,7 @@ fun ImageCard(
             text = if(movieTitle == "null") "" else movieTitle,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier
-                .padding(5.dp)
-                .width(170.dp),
+                .width(120.dp),
             overflow = TextOverflow.Ellipsis,
             fontSize = 12.sp,
             maxLines = 2,

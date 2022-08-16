@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.vectorinc.vectormoviesearch.presentation.show_movie
 
 import android.util.Log
@@ -16,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
@@ -28,12 +31,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.vectorinc.vectormoviesearch.R
-import com.vectorinc.vectormoviesearch.domain.model.*
+import com.vectorinc.vectormoviesearch.domain.model.MovieCredit
+import com.vectorinc.vectormoviesearch.domain.model.ResultReview
+import com.vectorinc.vectormoviesearch.domain.model.ThumbNail
 import com.vectorinc.vectormoviesearch.presentation.OfflineDialog
 import com.vectorinc.vectormoviesearch.presentation.movie_listings.RatingBarItem
 import com.vectorinc.vectormoviesearch.presentation.search_screen.Loading
@@ -41,7 +48,8 @@ import com.vectorinc.vectormoviesearch.ui.theme.DarkBlue
 import com.vectorinc.vectormoviesearch.ui.theme.DarkDimLight
 import com.vectorinc.vectormoviesearch.ui.theme.MinContrastOfPrimaryVsSurface
 import com.vectorinc.vectormoviesearch.util.*
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Destination
@@ -56,6 +64,8 @@ fun PreviewScreen(
         color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
     }
     val state = viewModel.state
+
+    val scope = rememberCoroutineScope()
     if (!state.isLoading) {
 
         Loading()
@@ -111,13 +121,19 @@ fun PreviewScreen(
                         dominantColorState.reset()
                     }
                 }
-
+                val sheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
+                val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
+                val comments: LazyPagingItems<ResultReview> =
+                    viewModel.reviews.collectAsLazyPagingItems()
                 BottomSheetScaffold(
+                    scaffoldState = scaffoldState,
+                    sheetPeekHeight = 0.dp,
                     sheetContent = {
+
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(500.dp)
+                                .height(450.dp)
                         ) {
                             Column(modifier = Modifier.fillMaxSize()) {
                                 Row(
@@ -137,15 +153,18 @@ fun PreviewScreen(
                                         .fillMaxWidth(),
                                     verticalArrangement = Arrangement.spacedBy(10.dp)
                                 ) {
-                                    val item = state.reviews?.results
-                                    items(state.reviews?.results?.size ?: 0) { i ->
-                                        item?.get(i).let {
+                                    items(comments.itemCount) { i ->
+                                        comments[i].let {
                                             val pic =
                                                 rememberAsyncImagePainter(
-                                                    "https://image.tmdb.org/t/p/original" + item?.get(i)?.author_details?.avatar_path,
+                                                    "https://image.tmdb.org/t/p/original" + comments[i]?.author_details?.avatar_path,
                                                     error = painterResource(id = R.drawable.placeholder)
                                                 )
-                                           MessageCard(painter = pic, it?.content?: "", it?.author_details?.name?: "" )
+                                            MessageCard(
+                                                painter = pic,
+                                                it?.content ?: "",
+                                                it?.author ?: ""
+                                            )
 
                                         }
                                     }
@@ -177,7 +196,12 @@ fun PreviewScreen(
                             )
                     ) {
                         AppBar(movieUrlBackDrop = movieUrlBackDrop, navigator = navigator)
-                        TitleBody(movieUrlImage = movieUrlImage, viewModel = viewModel)
+                        TitleBody(
+                            movieUrlImage = movieUrlImage,
+                            viewModel = viewModel,
+                            scope,
+                            sheetState
+                        )
                         Column(
                             Modifier
                                 .fillMaxSize()
@@ -392,7 +416,12 @@ fun AppBar(movieUrlBackDrop: Painter, navigator: DestinationsNavigator) {
 }
 
 @Composable
-fun TitleBody(movieUrlImage: Painter, viewModel: PreviewViewModel) {
+fun TitleBody(
+    movieUrlImage: Painter,
+    viewModel: PreviewViewModel,
+    scope: CoroutineScope,
+    sheetState: BottomSheetState
+) {
     val state = viewModel.state
     val size = state.movies?.genres?.size ?: 0
 
@@ -512,7 +541,7 @@ fun TitleBody(movieUrlImage: Painter, viewModel: PreviewViewModel) {
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Log.d("Comment", "${state.reviews?.id}")
-                CommentNumber(state)
+                CommentNumber(state, scope, sheetState)
 
 
             }
@@ -533,7 +562,8 @@ fun CastItem(name: String, pic: AsyncImagePainter, character: String) {
             painter = pic, contentDescription = "Image",
             Modifier
                 .clip(CircleShape)
-                .size(70.dp), contentScale = ContentScale.Crop
+                .size(60.dp),
+            contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(5.dp))
         Text(text = name, fontSize = 8.sp)
@@ -562,7 +592,9 @@ fun ItemCast(moviesCredit: MovieCredit?) {
                         "https://image.tmdb.org/t/p/original" + item?.get(i)?.profile_path,
                         error = painterResource(
                             id = R.drawable.placeholder
-                        )
+                        ),
+                        filterQuality = FilterQuality.Low, contentScale = ContentScale.Crop,
+                        placeholder = painterResource(id = R.drawable.placeholder)
                     )
                 CastItem(name = item?.get(i)?.name ?: "", pic = pic, it?.character ?: "")
 
@@ -587,7 +619,8 @@ fun MovieTrailers(thumbNail: ThumbNail?) {
                     val pic =
                         rememberAsyncImagePainter(
                             "https://img.youtube.com/vi/" + it?.key + "/maxresdefault.jpg",
-                            error = painterResource(id = R.drawable.video_placeholder)
+                            error = painterResource(id = R.drawable.video_placeholder),
+                            filterQuality = FilterQuality.Low, contentScale = ContentScale.Crop,
                         )
                     Log.d("Key", it?.key.toString())
 
@@ -602,9 +635,12 @@ fun MovieTrailers(thumbNail: ThumbNail?) {
 }
 
 @Composable
-fun CommentNumber(state: PreviewListingState) {
+fun CommentNumber(
+    state: PreviewListingState,
+    scope: CoroutineScope,
+    sheetState: BottomSheetState
+) {
     Box() {
-
 
         Image(
             painter = painterResource(id = R.drawable.chat),
@@ -612,6 +648,11 @@ fun CommentNumber(state: PreviewListingState) {
             modifier = Modifier
                 .size(35.dp)
                 .offset((10).dp, 0.dp)
+                .clickable {
+                    scope.launch {
+                        if (sheetState.isExpanded) sheetState.collapse() else sheetState.expand()
+                    }
+                }
 
         )
 
@@ -664,7 +705,11 @@ fun ItemCrew(moviesCredit: MovieCredit?) {
                 val pic =
                     rememberAsyncImagePainter(
                         "https://image.tmdb.org/t/p/original" + item?.get(i)?.profile_path,
-                        error = painterResource(id = R.drawable.placeholder)
+                        error = painterResource(id = R.drawable.placeholder),
+                        filterQuality = FilterQuality.Low, contentScale = ContentScale.Crop,
+                        placeholder = painterResource(id = R.drawable.placeholder)
+
+
                     )
                 CastItem(name = item?.get(i)?.name ?: "", pic = pic, "")
 
@@ -675,7 +720,7 @@ fun ItemCrew(moviesCredit: MovieCredit?) {
 
 
 @Composable
-fun ShowThumbNail(painter: Painter, key: String) {
+fun ShowThumbNail(painter: AsyncImagePainter, key: String) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
@@ -713,7 +758,7 @@ fun ShowThumbNail(painter: Painter, key: String) {
 }
 
 @Composable
-fun MessageCard(painter: AsyncImagePainter, content : String, authorName: String) {
+fun MessageCard(painter: AsyncImagePainter, content: String, authorName: String) {
 
     Row(modifier = Modifier.padding(all = 8.dp)) {
         Image(
@@ -722,7 +767,8 @@ fun MessageCard(painter: AsyncImagePainter, content : String, authorName: String
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .border(1.5.dp, MaterialTheme.colors.secondaryVariant, CircleShape)
+                .border(1.5.dp, MaterialTheme.colors.secondaryVariant, CircleShape),
+            contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.width(8.dp))
 
@@ -744,14 +790,29 @@ fun MessageCard(painter: AsyncImagePainter, content : String, authorName: String
                 shape = MaterialTheme.shapes.medium,
                 elevation = 1.dp,
             ) {
-                Text(
-                    text = content,
-                    modifier = Modifier.padding(all = 4.dp),
-                    // If the message is expanded, we display all its content
-                    // otherwise we only display the first line
-                    maxLines = if (isExpanded) Int.MAX_VALUE else 1,
-                    style = MaterialTheme.typography.body2
-                )
+                Column() {
+                    Text(
+                        text = content,
+                        modifier = Modifier.padding(all = 8.dp),
+                        overflow = TextOverflow.Ellipsis,
+
+                        maxLines = if (isExpanded) Int.MAX_VALUE else 4,
+                        style = MaterialTheme.typography.body2
+                    )
+                    Text(
+                        text = if (isExpanded) "Read less" else "Read more",
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 10.sp,
+                        color = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .clickable {
+                                isExpanded = !isExpanded
+                            }
+                            .padding(5.dp),
+
+                        )
+                }
+
             }
         }
     }

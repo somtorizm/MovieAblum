@@ -3,8 +3,10 @@ package com.vectorinc.vectormoviesearch.presentation.movie_listings
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,6 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vectorinc.vectormoviesearch.ui.theme.DarkBlue
 
 @Composable
 fun RatingBarItem(
@@ -55,7 +58,7 @@ fun RatingBarItem(
     }
 
     Box(contentAlignment = Alignment.Center,
-        modifier = Modifier.size(radius * 2)
+        modifier = Modifier.size(radius * 2).background(DarkBlue, CircleShape)
     ) {
         Canvas(modifier = Modifier.size(radius * 2)){
             drawArc(

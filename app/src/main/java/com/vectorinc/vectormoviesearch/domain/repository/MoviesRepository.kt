@@ -27,7 +27,7 @@ interface MoviesRepository {
 
     suspend fun getThumbNail(movieId: Int) : Flow<Resource<ThumbNail>>
 
-    suspend fun getReview(movieId: Int) : Flow<Resource<Review>>
+    suspend fun getReview(movieId: Int, page: Int) :  Flow<Resource<Review>>
 
 
 }

@@ -10,11 +10,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.vectorinc.vectormoviesearch.data.pagination.MoviesPagingSource
 import com.vectorinc.vectormoviesearch.data.remote.MoviesApi
 import com.vectorinc.vectormoviesearch.domain.model.Result
 import com.vectorinc.vectormoviesearch.domain.repository.MoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -35,16 +37,19 @@ class SearchViewModel @Inject constructor(
 
     private var lastScrollIndex = 0
 
-    private val _scrollUp = MutableLiveData(false)
-    val scrollUp: LiveData<Boolean>
-        get() = _scrollUp
+    private val _searchVisiblity = MutableLiveData(false)
+    val searchVisiblity: LiveData<Boolean>
+        get() = _searchVisiblity
 
-    fun updateScrollPosition(newScrollIndex: Int) {
-        if (newScrollIndex == lastScrollIndex) return
-
-        _scrollUp.value = newScrollIndex > lastScrollIndex
-        lastScrollIndex = newScrollIndex
+    var user: Flow<PagingData<Result>> = Pager(PagingConfig(pageSize = 20)) {
+        MoviesPagingSource(api, state.searchQuery)
+    }.flow.cachedIn(viewModelScope)
+    
+    fun setSearchVisibility(boolean: Boolean){
+        _searchVisiblity.value =  boolean
     }
+
+    
 
     fun onEvent(event: SearchListingEvent) {
         when (event) {
@@ -55,7 +60,7 @@ class SearchViewModel @Inject constructor(
                     delay(200L)
                     user = Pager(PagingConfig(pageSize = 20)) {
                         MoviesPagingSource(api, state.searchQuery)
-                    }.flow
+                    }.flow.cachedIn(viewModelScope)
 
 
                 }
@@ -69,9 +74,7 @@ class SearchViewModel @Inject constructor(
     }
 
 
-    var user: Flow<PagingData<Result>> = Pager(PagingConfig(pageSize = 20)) {
-        MoviesPagingSource(api, state.searchQuery)
-    }.flow
+
 
 
 }

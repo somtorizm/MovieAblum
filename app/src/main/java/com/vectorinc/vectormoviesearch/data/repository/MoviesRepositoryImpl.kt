@@ -29,24 +29,10 @@ class MoviesRepositoryImpl @Inject constructor(
     override suspend fun getMoviesGenre(fetchFromRemote: Boolean): Flow<Resource<MoviesGenreListing>> {
         return flow {
             emit(Resource.isLoading(true))
-            val localMoviesListings = dao.readMovieListings()
-            if (localMoviesListings != null) {
-                emit(
-                    Resource.Success(
-                        data = localMoviesListings.toMoviesGenreListing()
-                    )
-                )
-            }
-            val shouldLoadFromCache = (localMoviesListings != null && !fetchFromRemote)
-
-            if (shouldLoadFromCache) {
-                emit(Resource.isLoading(false))
-                return@flow
-            }
 
             val remoteListings = try {
                 val response = api.getGenreMoviesListing()
-                response.toMoviesEntity()
+                response.toMoviesGenreListing()
 
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -59,11 +45,9 @@ class MoviesRepositoryImpl @Inject constructor(
                 null
             }
             remoteListings?.let { listings ->
-                dao.clearMovieListings()
-                dao.insertMovieListings(listings)
                 emit(
                     Resource.Success(
-                        data = dao.readMovieListings().toMoviesGenreListing()
+                        data = listings
                     )
                 )
                 emit(Resource.isLoading(false))
@@ -142,7 +126,7 @@ class MoviesRepositoryImpl @Inject constructor(
             } catch (e: IOException) {
                 e.printStackTrace()
                 emit(Resource.Error("Couldn't load data"))
-                Log.d("Hello", "http erro loading")
+                Log.d("Hello", "http error loading")
 
                 null
             } catch (e: HttpException) {
@@ -189,11 +173,11 @@ class MoviesRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getReview(movieId: Int): Flow<Resource<Review>> {
+    override suspend fun getReview(movieId: Int, page: Int): Flow<Resource<Review>> {
         return flow {
 
             val remoteMovies = try {
-                api.getReviews(movieId)
+                api.getReviews(movieId,page)
 
 
             } catch (e: IOException) {

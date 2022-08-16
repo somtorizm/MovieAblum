@@ -21,7 +21,6 @@ class MovieListingViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     var state by mutableStateOf(MoviesListingState())
-    var stateTrending by mutableStateOf(MoviesListingState())
 
 
     init {
@@ -84,8 +83,8 @@ class MovieListingViewModel @Inject constructor(
                     is Resource.Success -> {
                         result.data?.let { listings ->
 
-                            stateTrending = stateTrending.copy(
-                                movies = listings
+                            state = state.copy(
+                                moviesTrending = listings
                             )
                         }
                     }

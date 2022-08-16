@@ -53,7 +53,6 @@ fun ShowMovies(
 
 
     val state = viewModel.state
-    val stateTrending = viewModel.stateTrending
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = viewModel.state.isRefreshing
     )
@@ -85,7 +84,7 @@ fun ShowMovies(
             DynamicThemePrimaryColorsFromImage(dominantColorState) {
                 val baseImageUrl = "https://image.tmdb.org/t/p/original/"
 
-                val selectedImageUrl = baseImageUrl + state.movies?.result?.get(0)?.imagePoster
+                val selectedImageUrl = baseImageUrl + state.moviesTrending?.result?.get(0)?.imagePoster
 
                 // When the selected image url changes, call updateColorsFromImageUrl() or reset()
                 LaunchedEffect(selectedImageUrl) {
@@ -158,15 +157,15 @@ fun ShowMovies(
                                 .verticalScroll(rememberScrollState())
                         ) {
 
-                            if (state.movies != null) {
+                            if (state.moviesTrending != null) {
 
-                                val imageUrl = state.movies.result?.get(0)?.imagePoster
-                                val movieTitle = state.movies.result?.get(0)?.title
-                                val movieOriginalTitle = state.movies.result?.get(0)?.titleOriginal
-                                val voteRate = state.movies.result?.get(0)?.voteAverage ?: 0.0
-                                val item = state.movies.result?.get(0)
+                                val imageUrl = state.moviesTrending.result?.get(0)?.imagePoster
+                                val movieTitle = state.moviesTrending.result?.get(0)?.title
+                                val movieOriginalTitle = state.moviesTrending.result?.get(0)?.titleOriginal
+                                val voteRate = state.moviesTrending.result?.get(0)?.voteAverage ?: 0.0
+                                val item = state.moviesTrending.result?.get(0)
 
-                                val movieDescription = state.movies.result?.get(0)?.description
+                                val movieDescription = state.moviesTrending.result?.get(0)?.description
                                 ImageCardRow(
                                     imageurl = imageUrl.toString(),
                                     modifier = Modifier,
@@ -184,13 +183,11 @@ fun ShowMovies(
                             listItems(name = "Trending Movies",Modifier.padding(20.dp))
 
                             LazyRow(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(15.dp),
-                                horizontalArrangement = Arrangement.spacedBy(5.dp)
+                                modifier = Modifier.padding(10.dp),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                items(stateTrending.movies?.result?.size ?: 0) { i ->
-                                    stateTrending.movies?.result?.get(i).let {
+                                items(state.moviesTrending?.result?.size ?: 0) { i ->
+                                    state.moviesTrending?.result?.get(i).let {
 
 
                                         val movie = it

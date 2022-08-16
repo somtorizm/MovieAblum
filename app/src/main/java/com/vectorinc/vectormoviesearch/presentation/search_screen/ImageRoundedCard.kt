@@ -50,13 +50,12 @@ fun ImageCardRounded(
                 Box(
                     modifier = Modifier
                         .height(170.dp)
-                        .width(150.dp)
+                        .width(120.dp)
                 ) {
                     Image(
                         painter = painter,
                         contentDescription = null,
                         modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.Crop
                     )
 
                 }

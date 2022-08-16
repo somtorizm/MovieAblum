@@ -12,30 +12,26 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.vectorinc.vectormoviesearch.R
 import com.vectorinc.vectormoviesearch.domain.model.Result
 import com.vectorinc.vectormoviesearch.presentation.movie_listings.MovieListingViewModel
-import com.vectorinc.vectormoviesearch.ui.theme.DarkBlue
 import com.vectorinc.vectormoviesearch.ui.theme.DarkPurple
 import com.vectorinc.vectormoviesearch.ui.theme.MinContrastOfPrimaryVsSurface
 import com.vectorinc.vectormoviesearch.util.DynamicThemePrimaryColorsFromImage
@@ -54,13 +50,16 @@ fun Search(
 ) {
     val state = viewModel.state
     val scrollState = rememberLazyListState()
-    val scrollUpState = viewModel.scrollUp.value
+    val searchVisibility = viewModel.searchVisiblity.value
+    Log.d("Visbility", "$searchVisibility")
     var searchTxt by remember { mutableStateOf(state.searchQuery) }
     val surfaceColor = MaterialTheme.colors.surface
+
     val dominantColorState = rememberDominantColorState { color ->
         // We want a color which has sufficient contrast against the surface color
         color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
     }
+
 
     DynamicThemePrimaryColorsFromImage(dominantColorState) {
         val baseImageUrl = "https://image.tmdb.org/t/p/original/"
@@ -153,8 +152,10 @@ fun Search(
                 },
 
                 )
+            Spacer(modifier = Modifier.height(10.dp))
+           LoadingSpinner(searchVisibility!!)
 
-            SearchMovies(movies = viewModel.user, navigator = navigator, scrollState, scrollUpState)
+            SearchMovies(movies = viewModel.user, navigator = navigator, scrollState,viewModel)
 
         }
 
@@ -166,8 +167,9 @@ fun SearchMovies(
     movies: Flow<PagingData<Result>>,
     navigator: DestinationsNavigator,
     scrollState: LazyListState,
-    scrollUpState: Boolean?
-) {
+    viewModel: SearchViewModel
+
+    ) {
     val baseImageUrl = "https://image.tmdb.org/t/p/original/"
 
 
@@ -190,8 +192,10 @@ fun SearchMovies(
                 val item = it
                 val movieUrl =
                     rememberAsyncImagePainter(
-                        baseImageUrl + (item?.imagePoster ?: item?.backdropPath)
+                        baseImageUrl + (item?.imagePoster ?: item?.backdropPath),
+                        filterQuality = FilterQuality.Low, contentScale = ContentScale.Crop,
                     )
+
                 ImageCardRounded(
                     painter = movieUrl,
                     movieTitle = item?.title.toString(),
@@ -216,6 +220,7 @@ fun SearchMovies(
                     item { LoadingItem(visible = true) }
 
 
+
                 }
                 loadState.refresh is
                         LoadState.Error -> {
@@ -223,12 +228,14 @@ fun SearchMovies(
                 }
                 loadState.append is
                         LoadState.Error -> {
+
                     item { LoadingItem(visible = false) }
 
 
                 }
                 loadState.append is
                         LoadState.NotLoading -> {
+
                     item { LoadingItem(visible = false) }
 
                 }
@@ -244,6 +251,12 @@ fun SearchMovies(
 fun LoadingItem(visible: Boolean) {
     if (visible) {
         ShimmerAnimation()
+    }
+}
+@Composable
+fun LoadingSpinner(visible: Boolean) {
+    if (visible) {
+        LoadingSwipeClone()
     }
 }
 
