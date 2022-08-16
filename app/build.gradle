@@ -79,6 +79,10 @@ dependencies {
 
     implementation 'androidx.palette:palette:1.0.0'
 
+    //Lottie Animations
+    implementation 'com.airbnb.android:lottie-compose:5.2.0'
+
+
 
 
     //Coil
