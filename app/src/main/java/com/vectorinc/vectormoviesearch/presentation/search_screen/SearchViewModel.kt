@@ -55,15 +55,10 @@ class SearchViewModel @Inject constructor(
         when (event) {
             is SearchListingEvent.OnSearchQueryChange -> {
                 state = state.copy(searchQuery = event.query)
-                searchJob?.cancel()
-                searchJob = viewModelScope.launch {
-                    delay(200L)
-                    user = Pager(PagingConfig(pageSize = 20)) {
+                user = Pager(PagingConfig(pageSize = 20)) {
                         MoviesPagingSource(api, state.searchQuery)
                     }.flow.cachedIn(viewModelScope)
 
-
-                }
             }
             SearchListingEvent.Refresh -> TODO()
             else -> {

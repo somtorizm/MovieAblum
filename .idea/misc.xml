@@ -4,9 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable/ic_baseline_search_24_gray.xml" value="0.1" />
         <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable/ic_creaview.xml" value="0.2" />
         <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable/ic_drag_handle.xml" value="0.154" />
+        <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable/ic_film_gallery_svgrepo_com.xml" value="0.1" />
+        <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable/ic_gallery_svgrepo_com.xml" value="0.1" />
+        <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable/ic_icons8_youtube.xml" value="0.1" />
+        <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable/ic_image_gallery_svgrepo_com.xml" value="0.1" />
+        <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable/ic_information_image_photo_icon.xml" value="0.1" />
         <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1545" />
+        <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable/ic_no_message.xml" value="0.1" />
+        <entry key="..\:/Users/USER/Desktop/VectorMovieSearch/app/src/main/res/drawable/ic_reload_image_photo_icon.xml" value="0.1" />
       </map>
     </option>
   </component>

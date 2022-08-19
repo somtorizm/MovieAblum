@@ -55,7 +55,8 @@ fun ImageCardRounded(
                     Image(
                         painter = painter,
                         contentDescription = null,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().align(Alignment.Center),
+                        contentScale = ContentScale.Crop
                     )
 
                 }

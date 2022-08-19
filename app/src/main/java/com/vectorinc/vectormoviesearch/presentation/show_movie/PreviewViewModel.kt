@@ -79,7 +79,6 @@ class PreviewViewModel @Inject constructor(
                     }
                     is Resource.Success -> {
                         state = state.copy(movies = it.data)
-                        kotlinx.coroutines.delay(600)
                         state = state.copy(isLoading = true)
                         Log.d("View Model State", "Successful")
 

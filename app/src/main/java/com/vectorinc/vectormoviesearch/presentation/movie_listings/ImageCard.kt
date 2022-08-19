@@ -50,7 +50,7 @@ fun ImageCard(
                    Image(
                        painter = painter,
                        contentDescription = null,
-                       modifier = Modifier.fillMaxWidth(),
+                       modifier = Modifier.fillMaxWidth().align(Alignment.Center),
                        contentScale = ContentScale.Crop
                    )
                    Box(
@@ -99,7 +99,7 @@ fun ImageCard(
             overflow = TextOverflow.Ellipsis,
             fontSize = 12.sp,
             maxLines = 2,
-            color = Color.Gray
+
         )
     }
 

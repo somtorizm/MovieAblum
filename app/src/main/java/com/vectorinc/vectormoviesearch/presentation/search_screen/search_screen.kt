@@ -17,10 +17,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,10 +34,11 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.vectorinc.vectormoviesearch.R
 import com.vectorinc.vectormoviesearch.domain.model.Result
+import com.vectorinc.vectormoviesearch.presentation.movie_listings.ImageCard
 import com.vectorinc.vectormoviesearch.presentation.movie_listings.MovieListingViewModel
-import com.vectorinc.vectormoviesearch.ui.theme.DarkPurple
-import com.vectorinc.vectormoviesearch.ui.theme.MinContrastOfPrimaryVsSurface
+import com.vectorinc.vectormoviesearch.ui.theme.*
 import com.vectorinc.vectormoviesearch.util.DynamicThemePrimaryColorsFromImage
 import com.vectorinc.vectormoviesearch.util.contrastAgainst
 import com.vectorinc.vectormoviesearch.util.rememberDominantColorState
@@ -64,7 +69,7 @@ fun Search(
     DynamicThemePrimaryColorsFromImage(dominantColorState) {
         val baseImageUrl = "https://image.tmdb.org/t/p/original/"
 
-        val selectedImageUrl = baseImageUrl + moviesViewModel.state.movies?.result?.get(0)?.imagePoster
+        val selectedImageUrl = baseImageUrl + moviesViewModel.state.moviesTrending?.result?.get(0)?.imagePoster
 
         // When the selected image url changes, call updateColorsFromImageUrl() or reset()
         LaunchedEffect(selectedImageUrl) {
@@ -176,73 +181,85 @@ fun SearchMovies(
     val userListItems: LazyPagingItems<Result> = movies.collectAsLazyPagingItems()
     Log.d("Paging", "${userListItems.itemCount}")
 
-    LazyVerticalGrid(
-        GridCells.Fixed(3),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(10.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    if(userListItems.itemCount == 0){
+        SearchIconGray()
+    }else{
+        LazyVerticalGrid(
+            GridCells.Fixed(3),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
 
-    ) {
+            ) {
 
-        items(userListItems.itemCount) { i ->
+            items(userListItems.itemCount) { i ->
 
-            userListItems[i].let {
-                val item = it
-                val movieUrl =
-                    rememberAsyncImagePainter(
-                        baseImageUrl + (item?.imagePoster ?: item?.backdropPath),
-                        filterQuality = FilterQuality.Low, contentScale = ContentScale.Crop,
+                userListItems[i].let {
+                    val item = it
+                    val movieUrl =
+                        rememberAsyncImagePainter(
+                            baseImageUrl + (item?.imagePoster ?: item?.backdropPath),
+                            filterQuality = FilterQuality.Low,
+                            error =  painterResource(id = R.drawable.ic_image_gallery_svgrepo_com),
+                            contentScale = ContentScale.Crop
+
+
+
+                        )
+
+                    ImageCard(
+                        painter = movieUrl,
+                        movieTitle = item?.title.toString(),
+                        voteRate = item?.voteAverage ?: 0.0,
+                        modifier = Modifier,
+                        movieOriginalTitle = item?.titleOriginal ?: "",
+                        navigator = navigator,
+                        movieID = item?.id ?: 0
                     )
 
-                ImageCardRounded(
-                    painter = movieUrl,
-                    movieTitle = item?.title.toString(),
-                    voteRate = item?.voteAverage ?: 0.0,
-                    modifier = Modifier,
-                    result = item, navigator = navigator,
-                    movieId = item?.id ?: 0
-                )
-
-            }
-        }
-        userListItems.apply {
-            when {
-                loadState.refresh is
-                        LoadState.Loading -> {
-
-
-                }
-
-                loadState.append is
-                        LoadState.Loading -> {
-                    item { LoadingItem(visible = true) }
-
-
-
-                }
-                loadState.refresh is
-                        LoadState.Error -> {
-
-                }
-                loadState.append is
-                        LoadState.Error -> {
-
-                    item { LoadingItem(visible = false) }
-
-
-                }
-                loadState.append is
-                        LoadState.NotLoading -> {
-
-                    item { LoadingItem(visible = false) }
-
                 }
             }
-        }
+            userListItems.apply {
+                when {
+                    loadState.refresh is
+                            LoadState.Loading -> {
 
+
+                    }
+
+                    loadState.append is
+                            LoadState.Loading -> {
+                        item { LoadingItem(visible = true) }
+
+
+
+                    }
+                    loadState.refresh is
+                            LoadState.Error -> {
+
+                    }
+                    loadState.append is
+                            LoadState.Error -> {
+
+                        item { LoadingItem(visible = false) }
+
+
+                    }
+                    loadState.append is
+                            LoadState.NotLoading -> {
+
+                        item { LoadingItem(visible = false) }
+
+                    }
+                }
+            }
+
+        }
     }
+
+
 }
 
 
@@ -260,16 +277,38 @@ fun LoadingSpinner(visible: Boolean) {
     }
 }
 
+
 @Composable
-fun persistedScrollState(viewModel: SearchViewModel): ScrollState {
-    val scrollState = rememberScrollState(viewModel.scrollPosition)
-    DisposableEffect(key1 = null) {
-        onDispose {
-            viewModel.scrollPosition = scrollState.value
+fun SearchIconGray(){
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+        Column(verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally) {
+
+            Image(
+                painter = painterResource(id = R.drawable.ic_baseline_search_24_gray),
+                contentDescription = null,
+                modifier = Modifier.size(100.dp)
+            )
+
+            Text(
+                text = "Search CreaView",
+                fontWeight = FontWeight.SemiBold,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 18.sp,
+                color = DarkBlueBlured,
+                modifier = Modifier.padding(5.dp)
+            )
+            Text(
+                text = "Find your favorite movies, Tv shows and authors",
+                fontWeight = FontWeight.Normal,
+                color = DarkBlueBlured,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 12.sp
+            )
+
         }
     }
-    return scrollState
 }
+
 
 
 

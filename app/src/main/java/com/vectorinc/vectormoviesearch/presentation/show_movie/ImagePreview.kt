@@ -22,7 +22,7 @@ fun ImagePreview(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxWidth()
+
 
     ) {
         Image(
@@ -38,9 +38,9 @@ fun ImagePreview(
                     Brush.verticalGradient(
                         listOf(
                             Color.Transparent,
-                            color,
+                            DarkBlue,
                         ),
-                        startY = 300f
+                        startY = 10f
 
                     )
                 )

@@ -29,5 +29,8 @@ interface MoviesRepository {
 
     suspend fun getReview(movieId: Int, page: Int) :  Flow<Resource<Review>>
 
+    suspend fun getCastInfo(personId: Int) :  Flow<Resource<CastPerson>>
+
+
 
 }

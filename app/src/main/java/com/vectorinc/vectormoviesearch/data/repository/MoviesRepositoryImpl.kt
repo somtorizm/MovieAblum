@@ -202,6 +202,35 @@ class MoviesRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun getCastInfo(personId: Int): Flow<Resource<CastPerson>> {
+        return flow {
+
+            val remoteMovies = try {
+                api.getCastInfo(personId)
+
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                Log.d("Hello", "http error loading")
+
+                null
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                null
+            }
+            remoteMovies.let {
+                val data = it?.body()?.toCast()
+                emit(Resource.Success(data))
+
+            }
+
+
+        }
+
+    }
+
 
     override suspend fun getSearchMovies(
         searchQuery: String,
