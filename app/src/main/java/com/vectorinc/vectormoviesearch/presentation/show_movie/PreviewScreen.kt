@@ -30,11 +30,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.vectorinc.vectormoviesearch.R
@@ -179,6 +183,7 @@ fun PreviewScreen(
 
                             }
 
+
                         }
 
                     },
@@ -241,38 +246,38 @@ fun PreviewScreen(
                                     },
 
                                     )
-                                Spacer(modifier = Modifier.height(10.dp))
+
+
+                                Spacer(modifier = Modifier.height(15.dp))
 
                                 Text(
                                     text = "Cast",
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp,
+                                    fontSize = 15.sp,
                                     color = Color.White
                                 )
 
-                                Spacer(modifier = Modifier.height(10.dp))
+                                Spacer(modifier = Modifier.height(15.dp))
 
                                 ItemCast(moviesCredit = state.moviesCredit, navigator)
-                                Spacer(modifier = Modifier.height(10.dp))
-
-                                Spacer(modifier = Modifier.height(10.dp))
+                                Spacer(modifier = Modifier.height(15.dp))
 
                                 Text(
                                     text = "Crew",
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp,
+                                    fontSize = 15.sp,
                                     color = Color.White
                                 )
-                                Spacer(modifier = Modifier.height(10.dp))
+                                Spacer(modifier = Modifier.height(15.dp))
                                 ItemCrew(moviesCredit = state.moviesCredit, navigator = navigator)
-                                Spacer(modifier = Modifier.height(10.dp))
+                                Spacer(modifier = Modifier.height(15.dp))
                                 Text(
                                     text = "Movie Trailer",
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp,
+                                    fontSize = 15.sp,
                                     color = Color.White
                                 )
-                                Spacer(modifier = Modifier.height(10.dp))
+                                Spacer(modifier = Modifier.height(15.dp))
                                 MovieTrailers(thumbNail = state.thumbNails)
 
 
@@ -349,6 +354,11 @@ fun PreviewScreen(
 
                                 )
                         }
+                        GoogleAds(
+                            Modifier
+                                .align(Alignment.BottomCenter)
+                                .fillMaxWidth())
+
 
 
                     }
@@ -417,7 +427,7 @@ fun MovieCategoryTabIndicator(
 
 @Composable
 fun AppBar(movieUrlBackDrop: Painter, navigator: DestinationsNavigator) {
-    Box(Modifier.height(200.dp)) {
+    Box(Modifier.height(180.dp)) {
         ImagePreview(
             painter = movieUrlBackDrop,
             modifier = Modifier.fillMaxWidth(),
@@ -428,6 +438,7 @@ fun AppBar(movieUrlBackDrop: Painter, navigator: DestinationsNavigator) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TitleBody(
     movieUrlImage: Painter,
@@ -540,10 +551,17 @@ fun TitleBody(
 
 
             Row(verticalAlignment = Alignment.CenterVertically) {
+                val context = LocalContext.current
+                val url = state.movies?.id ?: 0
+
                 Image(
                     painter = painterResource(id = R.drawable.ic_movie_icon),
                     contentDescription = stringResource(com.vectorinc.vectormoviesearch.R.string.search),
-                    modifier = Modifier.size(35.dp)
+                    modifier = Modifier
+                        .size(35.dp)
+                        .clickable {
+                            moveToDomain(url, context)
+                        }
                 )
                 Spacer(modifier = Modifier.width(10.dp))
 
@@ -591,7 +609,7 @@ fun CastItem(
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(5.dp))
-        Text(text = name, fontSize = 8.sp)
+        Text(text = name, fontSize = 10.sp)
         Spacer(modifier = Modifier.height(5.dp))
         Text(text = character, fontSize = 8.sp, color = MaterialTheme.colors.secondary)
 
@@ -882,6 +900,21 @@ fun NoMessage() {
 
         }
     }
+}
+
+@Composable
+fun GoogleAds(modifier: Modifier) {
+    AndroidView(
+        modifier = modifier
+            .fillMaxWidth().background(DarkBlue),
+        factory = { context ->
+            AdView(context).apply {
+                setAdSize(AdSize.BANNER)
+                adUnitId = context.getString(R.string.ad_id_banner)
+                loadAd(AdRequest.Builder().build())
+            }
+        }
+    )
 }
 
 

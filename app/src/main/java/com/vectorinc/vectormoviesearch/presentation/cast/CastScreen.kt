@@ -30,8 +30,8 @@ import com.vectorinc.vectormoviesearch.R
 import com.vectorinc.vectormoviesearch.presentation.OfflineDialog
 import com.vectorinc.vectormoviesearch.presentation.movie_listings.ImageCard
 import com.vectorinc.vectormoviesearch.presentation.movie_listings.RatingBarItem
-import com.vectorinc.vectormoviesearch.presentation.movie_listings.listItems
 import com.vectorinc.vectormoviesearch.presentation.search_screen.Loading
+import com.vectorinc.vectormoviesearch.presentation.show_movie.GoogleAds
 import com.vectorinc.vectormoviesearch.presentation.show_movie.ImagePreview
 import com.vectorinc.vectormoviesearch.ui.theme.DarkDimLight
 import com.vectorinc.vectormoviesearch.ui.theme.MinContrastOfPrimaryVsSurface
@@ -110,136 +110,174 @@ fun CastScreen(
                         dominantColorState.reset()
                     }
                 }
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .windowInsetsPadding(
-                            WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
-                        )
-                        .verticalGradientScrim(
-                            color = MaterialTheme.colors.primary.copy(0.2f),
-                            startYPercentage = 0.0f,
+                Box() {
 
-                            endYPercentage = 0.6f
-                        )
-                ) {
-                    AppBar(movieUrlBackDrop = movieUrlBackDrop, navigator = navigator)
-                    TitleBody(
-                        movieUrlImage = movieUrlImage,
-                        viewModel = viewModel,
-                    )
+
                     Column(
-                        Modifier
+                        modifier = Modifier
                             .fillMaxSize()
-                            .padding(15.dp)
-                            .offset(0.dp, (-40).dp)
-                    )
-                    {
-                        val bio =
-                            if (state.cast?.biography.isNullOrBlank()) "No Biography" else state.cast?.biography
-                                ?: ""
-                        var isExpanded by remember { mutableStateOf(false) }
-                        Text(
-                            text = bio,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 15.sp,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.clickable {
-                                isExpanded = !isExpanded
-                            },
-                            maxLines = if (isExpanded) Int.MAX_VALUE else 5,
-
+                            .verticalScroll(rememberScrollState())
+                            .windowInsetsPadding(
+                                WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
                             )
-                        Text(
-                            text = if (isExpanded) "Read less" else "Read more",
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 15.sp,
-                            color = MaterialTheme.colors.secondary,
-                            modifier = Modifier.clickable {
-                                isExpanded = !isExpanded
-                            },
+                            .verticalGradientScrim(
+                                color = MaterialTheme.colors.primary.copy(0.2f),
+                                startYPercentage = 0.0f,
 
+                                endYPercentage = 0.6f
                             )
-                        Spacer(modifier = Modifier.height(15.dp))
-                        Text(
-                            text = "Actor Images",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
-                            color = Color.White
+                    ) {
+                        BackDropImage(movieUrlBackDrop = movieUrlBackDrop)
+                        TitleBody(
+                            movieUrlImage = movieUrlImage,
+                            viewModel = viewModel,
                         )
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(15.dp)
+                                .offset(0.dp, (-40).dp)
+                        )
+                        {
+                            val bio =
+                                if (state.cast?.biography.isNullOrBlank()) "No Biography" else state.cast?.biography
+                                    ?: ""
+                            var isExpanded by remember { mutableStateOf(false) }
+                            Text(
+                                text = bio,
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 15.sp,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.clickable {
+                                    isExpanded = !isExpanded
+                                },
+                                maxLines = if (isExpanded) Int.MAX_VALUE else 5,
 
-                        Spacer(modifier = Modifier.height(15.dp))
+                                )
+                            Text(
+                                text = if (isExpanded) "Read less" else "Read more",
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 15.sp,
+                                color = MaterialTheme.colors.secondary,
+                                modifier = Modifier.clickable {
+                                    isExpanded = !isExpanded
+                                },
+
+                                )
+                            Spacer(modifier = Modifier.height(15.dp))
+                            Text(
+                                text = "Actor Images",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = Color.White
+                            )
+
+                            Spacer(modifier = Modifier.height(15.dp))
 
 
-                        LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            items(state.images?.profiles?.size ?: 0) { i ->
-                                state.images?.profiles?.get(i).let {
-                                    val url =
-                                        rememberAsyncImagePainter(
-                                            "https://image.tmdb.org/t/p/original" + it?.file_path,
-                                            error = painterResource(id = R.drawable.ic_image_gallery_svgrepo_com)
+                            LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                                items(state.images?.profiles?.size ?: 0) { i ->
+                                    state.images?.profiles?.get(i).let {
+                                        val url =
+                                            rememberAsyncImagePainter(
+                                                "https://image.tmdb.org/t/p/original" + it?.file_path,
+                                                error = painterResource(id = R.drawable.ic_image_gallery_svgrepo_com)
+                                            )
+                                        Image(
+                                            painter = url, contentDescription = "Image",
+                                            Modifier
+                                                .clip(CircleShape)
+                                                .size(80.dp),
+                                            contentScale = ContentScale.Crop
                                         )
-                                    Image(
-                                        painter = url, contentDescription = "Image",
-                                        Modifier
-                                            .clip(CircleShape)
-                                            .size(80.dp),
-                                        contentScale = ContentScale.Crop
-                                    )
+
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(15.dp))
+
+
+                            Text(
+                                text = "Featured Movies",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = Color.White
+                            )
+                            Spacer(modifier = Modifier.height(15.dp))
+
+
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                items(state.featuredMovies?.cast?.size ?: 2) { i ->
+                                    val movieUrl =
+                                        rememberAsyncImagePainter(
+                                            baseImageUrl + state.featuredMovies?.cast?.get(i)?.poster_path
+
+                                        )
+                                    val movieTitle = state.featuredMovies?.cast?.get(i)?.title
+                                    val voteRate =
+                                        state.featuredMovies?.cast?.get(i)?.vote_average ?: 0.0
+                                    val movieOrginalTitle =
+                                        state.featuredMovies?.cast?.get(i)?.original_title
+                                    val id = state.featuredMovies?.cast?.get(i)?.id ?: 0
+
+
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                    ) {
+
+                                        ImageCard(
+                                            painter = movieUrl,
+                                            movieTitle = movieTitle.toString(),
+                                            modifier = Modifier,
+                                            voteRate = voteRate,
+                                            movieOriginalTitle = movieOrginalTitle.toString(),
+                                            navigator = navigator,
+                                            movieID = id
+                                        )
+                                    }
 
                                 }
                             }
+
+
                         }
-                        Spacer(modifier = Modifier.height(15.dp))
-
-
-                        Text(
-                            text = "Featured Movies",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
-                            color = Color.White
-                        )
-                        Spacer(modifier = Modifier.height(15.dp))
-
-
-                        LazyRow(modifier = Modifier.fillMaxWidth()) {
-                            items(state.featuredMovies?.cast?.size ?: 2) { i ->
-                                val movieUrl =
-                                    rememberAsyncImagePainter(
-                                        baseImageUrl + state.featuredMovies?.cast?.get(i)?.poster_path
-
-                                    )
-                                val movieTitle = state.featuredMovies?.cast?.get(i)?.title
-                                val voteRate =
-                                    state.featuredMovies?.cast?.get(i)?.popularity ?: 0.0
-                                val movieOrginalTitle =
-                                    state.featuredMovies?.cast?.get(i)?.original_title
-                                val id = state.featuredMovies?.cast?.get(i)?.id ?: 0
-
-
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(10.dp)
-                                ) {
-
-                                    ImageCard(
-                                        painter = movieUrl,
-                                        movieTitle = movieTitle.toString(),
-                                        modifier = Modifier,
-                                        voteRate = voteRate,
-                                        movieOriginalTitle = movieOrginalTitle.toString(),
-                                        navigator = navigator,
-                                        movieID = id
-                                    )
-                                }
-
-                            }
-                        }
-
-
                     }
+
+                    Column() {
+                        Spacer(
+                            Modifier
+                                .fillMaxWidth()
+                                .windowInsetsTopHeight(WindowInsets.statusBars)
+                        )
+                        TopAppBar(
+                            elevation = 0.dp,
+                            backgroundColor = Color.Transparent,
+                            title = {
+                                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+
+                                    IconButton(
+                                        onClick = { navigator.popBackStack() },
+                                        Modifier.background(
+                                            DarkDimLight,
+                                            RoundedCornerShape(100)
+                                        )
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.ArrowBack,
+                                            contentDescription = stringResource(R.string.search),
+
+                                            )
+                                    }
+                                }
+                            },
+
+                            )
+                    }
+                    GoogleAds(Modifier.align(Alignment.BottomCenter).fillMaxWidth())
                 }
 
 
@@ -252,46 +290,13 @@ fun CastScreen(
 
 
 @Composable
-fun AppBar(movieUrlBackDrop: Painter, navigator: DestinationsNavigator) {
-    Box(Modifier.height(200.dp)) {
+fun BackDropImage(movieUrlBackDrop: Painter) {
+    Box(Modifier.height(180.dp)) {
         ImagePreview(
             painter = movieUrlBackDrop,
             modifier = Modifier.fillMaxWidth(),
             color = Color.Transparent,
         )
-
-        Column() {
-
-            Spacer(
-                Modifier
-                    .fillMaxWidth()
-                    .windowInsetsTopHeight(WindowInsets.statusBars)
-            )
-            TopAppBar(
-                elevation = 0.dp,
-                backgroundColor = Color.Transparent,
-                title = {
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-
-                        IconButton(
-                            onClick = { navigator.popBackStack() },
-                            Modifier.background(
-                                DarkDimLight,
-                                RoundedCornerShape(100)
-                            )
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.search),
-
-                                )
-                        }
-                    }
-                },
-
-                )
-        }
-
 
     }
 }

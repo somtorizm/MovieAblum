@@ -4,7 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -26,6 +26,19 @@ fun watchYoutubeVideo(context: Context, id: String) {
     )
     try {
         context.startActivity(appIntent)
+    } catch (ex: ActivityNotFoundException) {
+        context.startActivity(webIntent)
+    }
+}
+
+fun moveToDomain(url : Int, context: Context){
+    val urlAppend = "https://www.themoviedb.org/movie/$url"
+    val webIntent = Intent(
+        Intent.ACTION_VIEW,
+        Uri.parse(urlAppend)
+    )
+    try {
+        context.startActivity(webIntent)
     } catch (ex: ActivityNotFoundException) {
         context.startActivity(webIntent)
     }
