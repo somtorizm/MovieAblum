@@ -20,6 +20,7 @@ import com.vectorinc.vectormoviesearch.domain.model.Review
 import com.vectorinc.vectormoviesearch.domain.repository.MoviesRepository
 import com.vectorinc.vectormoviesearch.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -79,6 +80,7 @@ class PreviewViewModel @Inject constructor(
                     }
                     is Resource.Success -> {
                         state = state.copy(movies = it.data)
+                        delay(600)
                         state = state.copy(isLoading = true)
                         Log.d("View Model State", "Successful")
 

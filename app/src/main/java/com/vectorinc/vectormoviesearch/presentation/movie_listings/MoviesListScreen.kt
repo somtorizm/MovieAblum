@@ -158,14 +158,17 @@ fun ShowMovies(
                         ) {
 
                             if (state.moviesTrending != null) {
+                                 var pos = 0;
+                                if(state.moviesTrending.result?.get(0)?.title.isNullOrBlank()) pos++
+                                val titleOriginal = if(state.moviesTrending.result?.get(pos)?.titleOriginal.isNullOrBlank()) "" else state.moviesTrending.result?.get(pos)?.titleOriginal
+                                val title = if(state.moviesTrending.result?.get(pos)?.title.isNullOrBlank()) "" else state.moviesTrending.result?.get(pos)?.title
+                                val imageUrl = state.moviesTrending.result?.get(pos)?.imagePoster
+                                val movieTitle = title
+                                val movieOriginalTitle = titleOriginal
+                                val voteRate = state.moviesTrending.result?.get(pos)?.voteAverage ?: 0.0
+                                val item = state.moviesTrending.result?.get(pos)
 
-                                val imageUrl = state.moviesTrending.result?.get(0)?.imagePoster
-                                val movieTitle = state.moviesTrending.result?.get(0)?.title
-                                val movieOriginalTitle = state.moviesTrending.result?.get(0)?.titleOriginal
-                                val voteRate = state.moviesTrending.result?.get(0)?.voteAverage ?: 0.0
-                                val item = state.moviesTrending.result?.get(0)
-
-                                val movieDescription = state.moviesTrending.result?.get(0)?.description
+                                val movieDescription = state.moviesTrending.result?.get(pos)?.description
                                 ImageCardRow(
                                     imageurl = imageUrl.toString(),
                                     modifier = Modifier,

@@ -150,9 +150,9 @@ fun PreviewScreen(
                                         modifier = Modifier.size(35.dp)
                                     )
                                 }
-                                if(comments.itemCount == 0){
+                                if (comments.itemCount == 0) {
                                     NoMessage()
-                                }else{
+                                } else {
                                     LazyColumn(
                                         modifier = Modifier
                                             .fillMaxWidth(),
@@ -187,172 +187,171 @@ fun PreviewScreen(
                     sheetElevation = 10.dp,
                     sheetShape = RoundedCornerShape(5)
                 ) {
-                       Box(){
+                    Box() {
 
 
-                           Column(
-                               modifier = Modifier
-                                   .fillMaxSize()
-                                   .verticalScroll(rememberScrollState())
-                                   .windowInsetsPadding(
-                                       WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
-                                   )
-                                   .verticalGradientScrim(
-                                       color = MaterialTheme.colors.primary.copy(0.2f),
-                                       startYPercentage = 0.0f,
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                                .windowInsetsPadding(
+                                    WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
+                                )
+                                .verticalGradientScrim(
+                                    color = MaterialTheme.colors.primary.copy(0.2f),
+                                    startYPercentage = 0.0f,
 
-                                       endYPercentage = 0.6f
-                                   )
-                           ) {
-                               AppBar(movieUrlBackDrop = movieUrlBackDrop, navigator = navigator)
-                               TitleBody(
-                                   movieUrlImage = movieUrlImage,
-                                   viewModel = viewModel,
-                                   scope,
-                                   sheetState,
-                                   comments
-                               )
-                               Column(
-                                   Modifier
-                                       .fillMaxSize()
-                                       .padding(15.dp)
-                                       .offset(0.dp, (-40).dp)
-                               )
-                               {
-                                   var isExpanded by remember { mutableStateOf(false) }
-                                   Text(
-                                       text = state.movies?.overview ?: "",
-                                       fontWeight = FontWeight.Normal,
-                                       fontSize = 15.sp,
-                                       overflow = TextOverflow.Ellipsis,
-                                       modifier = Modifier.clickable {
-                                           isExpanded = !isExpanded
-                                       },
-                                       maxLines = if (isExpanded) Int.MAX_VALUE else 5,
+                                    endYPercentage = 0.6f
+                                )
+                        ) {
+                            AppBar(movieUrlBackDrop = movieUrlBackDrop, navigator = navigator)
+                            TitleBody(
+                                movieUrlImage = movieUrlImage,
+                                viewModel = viewModel,
+                                scope,
+                                sheetState,
+                                comments
+                            )
+                            Column(
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(15.dp)
+                                    .offset(0.dp, (-40).dp)
+                            )
+                            {
+                                var isExpanded by remember { mutableStateOf(false) }
+                                Text(
+                                    text = state.movies?.overview ?: "",
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 15.sp,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.clickable {
+                                        isExpanded = !isExpanded
+                                    },
+                                    maxLines = if (isExpanded) Int.MAX_VALUE else 5,
 
-                                       )
-                                   Text(
-                                       text = if (isExpanded) "Read less" else "Read more",
-                                       fontWeight = FontWeight.Normal,
-                                       fontSize = 15.sp,
-                                       color = MaterialTheme.colors.secondary,
-                                       modifier = Modifier.clickable {
-                                           isExpanded = !isExpanded
-                                       },
+                                    )
+                                Text(
+                                    text = if (isExpanded) "Read less" else "Read more",
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 15.sp,
+                                    color = MaterialTheme.colors.secondary,
+                                    modifier = Modifier.clickable {
+                                        isExpanded = !isExpanded
+                                    },
 
-                                       )
-                                   Spacer(modifier = Modifier.height(10.dp))
+                                    )
+                                Spacer(modifier = Modifier.height(10.dp))
 
-                                   Text(
-                                       text = "Cast",
-                                       fontWeight = FontWeight.Bold,
-                                       fontSize = 18.sp,
-                                       color = Color.White
-                                   )
+                                Text(
+                                    text = "Cast",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp,
+                                    color = Color.White
+                                )
 
-                                   Spacer(modifier = Modifier.height(10.dp))
+                                Spacer(modifier = Modifier.height(10.dp))
 
-                                   ItemCast(moviesCredit = state.moviesCredit, navigator)
-                                   Spacer(modifier = Modifier.height(10.dp))
+                                ItemCast(moviesCredit = state.moviesCredit, navigator)
+                                Spacer(modifier = Modifier.height(10.dp))
 
-                                   Spacer(modifier = Modifier.height(10.dp))
+                                Spacer(modifier = Modifier.height(10.dp))
 
-                                   Text(
-                                       text = "Crew",
-                                       fontWeight = FontWeight.Bold,
-                                       fontSize = 18.sp,
-                                       color = Color.White
-                                   )
-                                   Spacer(modifier = Modifier.height(10.dp))
-                                   ItemCrew(moviesCredit = state.moviesCredit, navigator = navigator)
-                                   Spacer(modifier = Modifier.height(10.dp))
-                                   Text(
-                                       text = "Movie Trailer",
-                                       fontWeight = FontWeight.Bold,
-                                       fontSize = 18.sp,
-                                       color = Color.White
-                                   )
-                                   Spacer(modifier = Modifier.height(10.dp))
-                                   MovieTrailers(thumbNail = state.thumbNails)
-
-
-                                   /*
-                                   Row(verticalAlignment = Alignment.CenterVertically,
-                                       horizontalArrangement = Arrangement.SpaceBetween) {
-                                       Text(
-                                           text = "Original Title",
-                                           fontSize = 15.sp,
-                                       )
-                                       Spacer(modifier = Modifier.width(5.dp))
-                                       Text(
-                                           text = state.movies?.original_title ?: "",
-                                           fontSize =  15.sp,
-                                           color = MaterialTheme.colors.secondary
-                                       )
-                                   } */
+                                Text(
+                                    text = "Crew",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp,
+                                    color = Color.White
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                ItemCrew(moviesCredit = state.moviesCredit, navigator = navigator)
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Text(
+                                    text = "Movie Trailer",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp,
+                                    color = Color.White
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                MovieTrailers(thumbNail = state.thumbNails)
 
 
-                                   /*
-                                   if (state.movieCategories.isNotEmpty()) {
-                                       MovieCategoryTabs(
-                                           categories = state.movieCategories,
-                                           selectedCategory = state.selectedMovieCategory,
-                                           onCategorySelected = viewModel::onMovieCategorySelected
-                                       )
-                                   }
-
-                                   when (state.selectedMovieCategory) {
-                                       PreviewViewModel.MovieCategory.Cast -> {
-
-                                           ItemCast(state.moviesCredit)
-
-
-                                       }
-                                       PreviewViewModel.MovieCategory.Crew -> {
-                                           Column(Modifier.fillMaxSize()) {
-
-                                           }
-
-                                           Log.d("Crew", "Preview")
-                                       }
-                                   } */
-
-                               }
-                           }
-                           Column(){
-                               Spacer(
-                                   Modifier
-                                       .fillMaxWidth()
-                                       .windowInsetsTopHeight(WindowInsets.statusBars)
-                               )
-                               TopAppBar(
-                                   elevation = 0.dp,
-                                   backgroundColor = Color.Transparent,
-                                   title = {
-                                       CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-
-                                           IconButton(
-                                               onClick = { navigator.popBackStack() },
-                                               Modifier.background(
-                                                   DarkDimLight,
-                                                   RoundedCornerShape(100)
-                                               )
-                                           ) {
-                                               Icon(
-                                                   imageVector = Icons.Filled.ArrowBack,
-                                                   contentDescription = stringResource(R.string.search),
-
-                                                   )
-                                           }
-                                       }
-                                   },
-
-                                   )
-                           }
+                                /*
+                                Row(verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Text(
+                                        text = "Original Title",
+                                        fontSize = 15.sp,
+                                    )
+                                    Spacer(modifier = Modifier.width(5.dp))
+                                    Text(
+                                        text = state.movies?.original_title ?: "",
+                                        fontSize =  15.sp,
+                                        color = MaterialTheme.colors.secondary
+                                    )
+                                } */
 
 
-                       }
+                                /*
+                                if (state.movieCategories.isNotEmpty()) {
+                                    MovieCategoryTabs(
+                                        categories = state.movieCategories,
+                                        selectedCategory = state.selectedMovieCategory,
+                                        onCategorySelected = viewModel::onMovieCategorySelected
+                                    )
+                                }
 
+                                when (state.selectedMovieCategory) {
+                                    PreviewViewModel.MovieCategory.Cast -> {
+
+                                        ItemCast(state.moviesCredit)
+
+
+                                    }
+                                    PreviewViewModel.MovieCategory.Crew -> {
+                                        Column(Modifier.fillMaxSize()) {
+
+                                        }
+
+                                        Log.d("Crew", "Preview")
+                                    }
+                                } */
+
+                            }
+                        }
+                        Column() {
+                            Spacer(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .windowInsetsTopHeight(WindowInsets.statusBars)
+                            )
+                            TopAppBar(
+                                elevation = 0.dp,
+                                backgroundColor = Color.Transparent,
+                                title = {
+                                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+
+                                        IconButton(
+                                            onClick = { navigator.popBackStack() },
+                                            Modifier.background(
+                                                DarkDimLight,
+                                                RoundedCornerShape(100)
+                                            )
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Filled.ArrowBack,
+                                                contentDescription = stringResource(R.string.search),
+
+                                                )
+                                        }
+                                    }
+                                },
+
+                                )
+                        }
+
+
+                    }
 
 
                 }
@@ -424,8 +423,6 @@ fun AppBar(movieUrlBackDrop: Painter, navigator: DestinationsNavigator) {
             modifier = Modifier.fillMaxWidth(),
             color = Color.Transparent,
         )
-
-
 
 
     }
@@ -560,7 +557,7 @@ fun TitleBody(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Log.d("Comment", "${state.reviews?.id}")
-                CommentNumber(state, scope, sheetState,comments)
+                CommentNumber(state, scope, sheetState, comments)
 
 
             }
@@ -574,9 +571,17 @@ fun TitleBody(
 }
 
 @Composable
-fun CastItem(name: String, pic: AsyncImagePainter, character: String, navigator: DestinationsNavigator, personId : Int) {
+fun CastItem(
+    name: String,
+    pic: AsyncImagePainter,
+    character: String,
+    navigator: DestinationsNavigator,
+    personId: Int
+) {
     Spacer(modifier = Modifier.height(10.dp))
-    Column(modifier = Modifier.clickable { navigator.navigate(CastScreenDestination(personId))  },horizontalAlignment = Alignment.CenterHorizontally
+    Column(
+        modifier = Modifier.clickable { navigator.navigate(CastScreenDestination(personId)) },
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = pic, contentDescription = "Image",
@@ -616,7 +621,13 @@ fun ItemCast(moviesCredit: MovieCredit?, navigator: DestinationsNavigator) {
                         filterQuality = FilterQuality.Low, contentScale = ContentScale.Crop,
                         placeholder = painterResource(id = R.drawable.placeholder)
                     )
-                CastItem(name = item?.get(i)?.name ?: "", pic = pic, it?.character ?: "", navigator = navigator, personId = item?.get(i)?.id ?: 0)
+                CastItem(
+                    name = item?.get(i)?.name ?: "",
+                    pic = pic,
+                    it?.character ?: "",
+                    navigator = navigator,
+                    personId = item?.get(i)?.id ?: 0
+                )
 
             }
         }
@@ -733,7 +744,13 @@ fun ItemCrew(moviesCredit: MovieCredit?, navigator: DestinationsNavigator) {
 
 
                     )
-                CastItem(name = item?.get(i)?.name ?: "", pic = pic, "", navigator,item?.get(i)?.id ?: 0)
+                CastItem(
+                    name = item?.get(i)?.name ?: "",
+                    pic = pic,
+                    "",
+                    navigator,
+                    item?.get(i)?.id ?: 0
+                )
 
             }
         }
@@ -841,9 +858,12 @@ fun MessageCard(painter: AsyncImagePainter, content: String, authorName: String)
 }
 
 @Composable
-fun NoMessage(){
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-        Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+fun NoMessage() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
             Image(
                 painter = painterResource(id = R.drawable.ic_no_message),

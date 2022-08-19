@@ -220,20 +220,81 @@ fun CastDto.toCast(): CastPerson {
         adult,
         also_known_as,
         biography,
-        birthday ?: "",
-        deathday ?: "",
+        birthday,
+        deathday,
         gender,
-        homepage ?: "",
+        homepage,
         id,
         imdb_id,
         known_for_department,
         name,
-        place_of_birth ?: "",
+        place_of_birth,
         popularity,
-        profile_path ?: ""
+        profile_path
     )
 }
 
+fun CastImagesDto.toCastImages(): CastImages {
+    return CastImages(
+        id, profiles.map {
+            Profile(
+                it.aspect_ratio,
+                it.file_path,
+                it.height,
+                it.iso_639_1,
+                it.vote_average,
+                it.vote_count,
+                it.width
+            )
+        }
+    )
+}
+
+fun ActorMoviesFeatureDto.toActorMovie(): ActorMoviesFeature {
+    return ActorMoviesFeature(
+        cast.map {
+            ActorsCast(
+                it.adult,
+                it.backdrop_path,
+                it.character,
+                it.credit_id,
+                it.genre_ids,
+                it.id,
+                it.original_language,
+                it.original_title,
+                it.overview,
+                it.popularity,
+                it.poster_path,
+                it.release_date,
+                it.title,
+                it.video,
+                it.vote_average,
+                it.vote_count
+            )
+        },
+        crew.map {
+            ActorsCrew(
+                it.adult,
+                it.backdrop_path,
+                it.credit_id,
+                it.department,
+                it.genre_ids,
+                it.id,
+                it.job,
+                it.original_language,
+                it.original_title,
+                it.overview,
+                it.popularity,
+                it.poster_path,
+                it.release_date,
+                it.title,
+                it.video,
+                it.vote_average,
+                it.vote_count
+            )
+        }, id
+    )
+}
 
 
 

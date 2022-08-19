@@ -25,6 +25,8 @@ class CastViewModel @Inject constructor(
 
     init {
         getCast(personId)
+        getImages(personId)
+        getMovieFeatured(personId)
     }
 
     fun getCast(id: Int) {
@@ -35,6 +37,33 @@ class CastViewModel @Inject constructor(
                     is Resource.Success -> {
                         state = state.copy(cast = it.data)
                         state = state.copy(isLoading = true)
+                    }
+                    is Resource.isLoading -> TODO()
+                }
+            }
+        }
+    }
+
+    fun getMovieFeatured(id: Int) {
+        viewModelScope.launch {
+            repository.getCastFeaturedMovie(personId).collect() {
+                when (it) {
+                    is Resource.Error -> state = state.copy(error = true)
+                    is Resource.Success -> {
+                        state = state.copy(featuredMovies = it.data)
+                    }
+                    is Resource.isLoading -> TODO()
+                }
+            }
+        }
+    }
+    fun getImages(id: Int) {
+        viewModelScope.launch {
+            repository.getCastImages(personId).collect() {
+                when (it) {
+                    is Resource.Error -> TODO()
+                    is Resource.Success -> {
+                        state = state.copy(images = it.data)
                     }
                     is Resource.isLoading -> TODO()
                 }

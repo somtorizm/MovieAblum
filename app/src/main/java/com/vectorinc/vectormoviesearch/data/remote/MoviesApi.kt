@@ -64,6 +64,18 @@ interface MoviesApi {
         @Query("api_key") apiKey: String = API_KEY,
     ): Response<CastDto>
 
+    @GET("person/{person_id}/images?")
+    suspend fun getCastImages(
+        @Path("person_id") personId: Int,
+        @Query("api_key") apiKey: String = API_KEY,
+    ): Response<CastImagesDto>
+
+    @GET("person/{person_id}/movie_credits?")
+    suspend fun getActorFeaturedMovies(
+        @Path("person_id") personId: Int,
+        @Query("api_key") apiKey: String = API_KEY,
+    ): Response<ActorMoviesFeatureDto>
+
 
     companion object {
         const val API_KEY = "df3519c1f585ca1a3cfdf76d1b495fdb"

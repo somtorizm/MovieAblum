@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -26,7 +28,9 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.vectorinc.vectormoviesearch.R
 import com.vectorinc.vectormoviesearch.presentation.OfflineDialog
+import com.vectorinc.vectormoviesearch.presentation.movie_listings.ImageCard
 import com.vectorinc.vectormoviesearch.presentation.movie_listings.RatingBarItem
+import com.vectorinc.vectormoviesearch.presentation.movie_listings.listItems
 import com.vectorinc.vectormoviesearch.presentation.search_screen.Loading
 import com.vectorinc.vectormoviesearch.presentation.show_movie.ImagePreview
 import com.vectorinc.vectormoviesearch.ui.theme.DarkDimLight
@@ -132,10 +136,12 @@ fun CastScreen(
                             .offset(0.dp, (-40).dp)
                     )
                     {
-                        val bio = if(state.cast?.biography.isNullOrBlank())  "No Biography" else state.cast?.biography ?: ""
+                        val bio =
+                            if (state.cast?.biography.isNullOrBlank()) "No Biography" else state.cast?.biography
+                                ?: ""
                         var isExpanded by remember { mutableStateOf(false) }
                         Text(
-                            text =  bio,
+                            text = bio,
                             fontWeight = FontWeight.Normal,
                             fontSize = 15.sp,
                             overflow = TextOverflow.Ellipsis,
@@ -155,7 +161,82 @@ fun CastScreen(
                             },
 
                             )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(15.dp))
+                        Text(
+                            text = "Actor Images",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            color = Color.White
+                        )
+
+                        Spacer(modifier = Modifier.height(15.dp))
+
+
+                        LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            items(state.images?.profiles?.size ?: 0) { i ->
+                                state.images?.profiles?.get(i).let {
+                                    val url =
+                                        rememberAsyncImagePainter(
+                                            "https://image.tmdb.org/t/p/original" + it?.file_path,
+                                            error = painterResource(id = R.drawable.ic_image_gallery_svgrepo_com)
+                                        )
+                                    Image(
+                                        painter = url, contentDescription = "Image",
+                                        Modifier
+                                            .clip(CircleShape)
+                                            .size(80.dp),
+                                        contentScale = ContentScale.Crop
+                                    )
+
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(15.dp))
+
+
+                        Text(
+                            text = "Featured Movies",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(15.dp))
+
+
+                        LazyRow(modifier = Modifier.fillMaxWidth()) {
+                            items(state.featuredMovies?.cast?.size ?: 2) { i ->
+                                val movieUrl =
+                                    rememberAsyncImagePainter(
+                                        baseImageUrl + state.featuredMovies?.cast?.get(i)?.poster_path
+
+                                    )
+                                val movieTitle = state.featuredMovies?.cast?.get(i)?.title
+                                val voteRate =
+                                    state.featuredMovies?.cast?.get(i)?.popularity ?: 0.0
+                                val movieOrginalTitle =
+                                    state.featuredMovies?.cast?.get(i)?.original_title
+                                val id = state.featuredMovies?.cast?.get(i)?.id ?: 0
+
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(10.dp)
+                                ) {
+
+                                    ImageCard(
+                                        painter = movieUrl,
+                                        movieTitle = movieTitle.toString(),
+                                        modifier = Modifier,
+                                        voteRate = voteRate,
+                                        movieOriginalTitle = movieOrginalTitle.toString(),
+                                        navigator = navigator,
+                                        movieID = id
+                                    )
+                                }
+
+                            }
+                        }
 
 
                     }
@@ -302,20 +383,41 @@ fun TitleBody(
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_movie_icon),
+                    contentDescription = stringResource(com.vectorinc.vectormoviesearch.R.string.search),
+                    modifier = Modifier.size(35.dp)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
 
-            Text(
-                text = state.cast?.known_for_department ?: "",
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 8.sp,
-                color = Color.White,
-                modifier = Modifier
-                    .background(
-                        MaterialTheme.colors.primary,
-                        RoundedCornerShape(30)
-                    )
-                    .padding(9.dp)
+                Text(
+                    text = state.cast?.known_for_department ?: "",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 8.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colors.primary,
+                            RoundedCornerShape(30)
+                        )
+                        .padding(9.dp)
 
-            )
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                RatingBarItem(
+                    voteRate = (state.cast?.popularity!! / 10) ?: 0.0,
+                    number = 100,
+                    radius = 12.dp,
+                    color = Color.Yellow,
+                    fontSize = 10.sp,
+                    modifier = Modifier
+                )
+            }
+
             Spacer(modifier = Modifier.width(10.dp))
 
         }

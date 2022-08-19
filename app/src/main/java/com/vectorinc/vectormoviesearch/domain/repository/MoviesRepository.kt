@@ -23,14 +23,17 @@ interface MoviesRepository {
 
     suspend fun getMoviesTrending(fetchFromRemote: Boolean): Flow<Resource<MoviesGenreListing>>
 
-    suspend fun getMoviesCredit(movieId: Int) : Flow<Resource<MovieCredit>>
+    suspend fun getMoviesCredit(movieId: Int): Flow<Resource<MovieCredit>>
 
-    suspend fun getThumbNail(movieId: Int) : Flow<Resource<ThumbNail>>
+    suspend fun getThumbNail(movieId: Int): Flow<Resource<ThumbNail>>
 
-    suspend fun getReview(movieId: Int, page: Int) :  Flow<Resource<Review>>
+    suspend fun getReview(movieId: Int, page: Int): Flow<Resource<Review>>
 
-    suspend fun getCastInfo(personId: Int) :  Flow<Resource<CastPerson>>
+    suspend fun getCastInfo(personId: Int): Flow<Resource<CastPerson>>
 
+    suspend fun getCastImages(personId: Int): Flow<Resource<CastImages>>
+
+    suspend fun getCastFeaturedMovie(personId: Int): Flow<Resource<ActorMoviesFeature>>
 
 
 }
