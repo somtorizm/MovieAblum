@@ -44,7 +44,7 @@ fun ImageCard(
            ) {
                Box(
                    modifier = Modifier
-                       .height(170.dp)
+                       .height(160.dp)
                        .width(120.dp)
                ) {
                    Image(
@@ -75,7 +75,7 @@ fun ImageCard(
            Box(
                modifier = Modifier
                    .fillMaxWidth()
-                   .height(170.dp),
+                   .height(160.dp),
                contentAlignment = Alignment.BottomEnd
            ) {
                RatingBarItem(
@@ -94,6 +94,7 @@ fun ImageCard(
         Text(
             text = if(movieTitle == "null") "" else movieTitle,
             fontWeight = FontWeight.SemiBold,
+            color = Color.LightGray,
             modifier = Modifier
                 .width(120.dp),
             overflow = TextOverflow.Ellipsis,

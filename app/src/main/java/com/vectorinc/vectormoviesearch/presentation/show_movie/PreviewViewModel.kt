@@ -11,12 +11,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.vectorinc.vectormoviesearch.data.pagination.MoviesPagingSource
 import com.vectorinc.vectormoviesearch.data.pagination.ReviewPagingSource
 import com.vectorinc.vectormoviesearch.data.remote.MoviesApi
-import com.vectorinc.vectormoviesearch.domain.model.Result
 import com.vectorinc.vectormoviesearch.domain.model.ResultReview
-import com.vectorinc.vectormoviesearch.domain.model.Review
 import com.vectorinc.vectormoviesearch.domain.repository.MoviesRepository
 import com.vectorinc.vectormoviesearch.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,10 +37,8 @@ class PreviewViewModel @Inject constructor(
     private val categories = MovieCategory.values().asList()
 
 
-
-
     var state by mutableStateOf(PreviewListingState())
-    val movieId = savedStateHandle.get<Int>("movieID")  ?: 0
+    val movieId = savedStateHandle.get<Int>("movieID") ?: 0
 
     val reviews: Flow<PagingData<ResultReview>> = Pager(PagingConfig(pageSize = 20)) {
         ReviewPagingSource(api, movieId)
@@ -94,7 +89,6 @@ class PreviewViewModel @Inject constructor(
 
         }
     }
-
 
 
     private fun getMovieCredit() {

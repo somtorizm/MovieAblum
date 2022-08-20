@@ -68,7 +68,7 @@ fun ImageCardRow(
             ) {
                 Box(
                     modifier = Modifier
-                        .height(250.dp)
+                        .height(240.dp)
                         .width(200.dp)
                 ) {
                     Image(
@@ -99,7 +99,7 @@ fun ImageCardRow(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(250.dp),
+                    .height(240.dp),
                 contentAlignment = Alignment.BottomEnd
             ) {
                 RatingBarItem(
@@ -121,7 +121,7 @@ fun ImageCardRow(
             verticalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.padding(1.dp)
         ) {
-            Text(text = movieTitle, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+            Text(text = movieTitle, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = movieOriginalTitle,

@@ -12,7 +12,7 @@ import java.io.IOException
 
 private const val STARTING_PAGE_INDEX = 1
 
-class TrendingMoviesPagingSource(private val api: MoviesApi) :
+class GenersMoviesPagingSource(private val api: MoviesApi) :
     PagingSource<Int, Result>() {
     override fun getRefreshKey(state: PagingState<Int, Result>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -25,7 +25,7 @@ class TrendingMoviesPagingSource(private val api: MoviesApi) :
         val position = params.key ?: STARTING_PAGE_INDEX
         try {
             Log.d("Entered Pagination", "Yes")
-            val response = api.getMoviesTrendingPaging( page = position)
+            val response = api.getGenreMoviesListing( page = position)
             val nextKey = position + 1
 
             val result = response.body()?.toMoviesGenreListing()

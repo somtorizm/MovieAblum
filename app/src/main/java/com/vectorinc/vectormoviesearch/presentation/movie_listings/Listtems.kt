@@ -28,7 +28,7 @@ fun listItems(name: String, modifier: Modifier) {
         Text(
             text = name,
             fontWeight = FontWeight.Bold,
-            fontSize = 15.sp,
+            fontSize = 18.sp,
             color = Color.White
         )
         Icon(

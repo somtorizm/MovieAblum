@@ -11,8 +11,10 @@ interface MoviesApi {
 
     @GET("discover/movie?")
     suspend fun getGenreMoviesListing(
-        @Query("api_key") apiKey: String = API_KEY
-    ): MoviesGenreListingDto
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("page") page: Int
+
+    ): Response<MoviesGenreListingDto>
 
     @GET("trending/all/day?")
     suspend fun getMoviesTrendingPaging(
@@ -20,10 +22,19 @@ interface MoviesApi {
         @Query("page") page: Int
     ): Response<MoviesGenreListingDto>
 
-    @GET("trending/all/day?")
-    suspend fun getMoviesTrending(
+
+    @GET("movie/top_rated?")
+    suspend fun getMoviesTopRated(
         @Query("api_key") apiKey: String = API_KEY,
-    ): MoviesGenreListingDto
+        @Query("page") page: Int
+    ): Response<MoviesGenreListingDto>
+
+    @GET("movie/upcoming?")
+    suspend fun getLatest(
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("page") page: Int
+    ): Response<MoviesGenreListingDto>
+
 
     @GET("search/movie?")
     suspend fun searchMoviesListing(

@@ -8,11 +8,10 @@ import kotlinx.coroutines.flow.Flow
 interface MoviesRepository {
 
     suspend fun getMoviesGenre(
-        fetchFromRemote: Boolean
+       page: Int
     ): Flow<Resource<MoviesGenreListing>>
 
 
-    suspend fun getMoviesTrendingPaging(page: Int): Flow<PagingData<Result>>
 
 
     suspend fun getSearchMovies(
@@ -21,7 +20,9 @@ interface MoviesRepository {
 
     suspend fun getMovieSelected(movieId: Int): Flow<Resource<MoviesDiscover>>
 
-    suspend fun getMoviesTrending(fetchFromRemote: Boolean): Flow<Resource<MoviesGenreListing>>
+    suspend fun getMoviesTrending(page: Int): Flow<Resource<MoviesGenreListing>>
+
+
 
     suspend fun getMoviesCredit(movieId: Int): Flow<Resource<MovieCredit>>
 

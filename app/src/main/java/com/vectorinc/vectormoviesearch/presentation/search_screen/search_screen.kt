@@ -50,13 +50,11 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun Search(
     navigator: DestinationsNavigator,
-    moviesViewModel: MovieListingViewModel = hiltViewModel(),
-    viewModel: SearchViewModel = hiltViewModel()
+    viewModel: SearchViewModel = hiltViewModel(),
+    imageUrl : String
 ) {
     val state = viewModel.state
-    val scrollState = rememberLazyListState()
     val searchVisibility = viewModel.searchVisiblity.value
-    Log.d("Visbility", "$searchVisibility")
     var searchTxt by remember { mutableStateOf(state.searchQuery) }
     val surfaceColor = MaterialTheme.colors.surface
 
@@ -69,7 +67,7 @@ fun Search(
     DynamicThemePrimaryColorsFromImage(dominantColorState) {
         val baseImageUrl = "https://image.tmdb.org/t/p/original/"
 
-        val selectedImageUrl = baseImageUrl + moviesViewModel.state.moviesTrending?.result?.get(0)?.imagePoster
+        val selectedImageUrl = baseImageUrl + imageUrl
 
         // When the selected image url changes, call updateColorsFromImageUrl() or reset()
         LaunchedEffect(selectedImageUrl) {
@@ -160,7 +158,7 @@ fun Search(
             Spacer(modifier = Modifier.height(10.dp))
            LoadingSpinner(searchVisibility!!)
 
-            SearchMovies(movies = viewModel.user, navigator = navigator, scrollState,viewModel)
+            SearchMovies(movies = viewModel.user, navigator = navigator)
 
         }
 
@@ -171,8 +169,6 @@ fun Search(
 fun SearchMovies(
     movies: Flow<PagingData<Result>>,
     navigator: DestinationsNavigator,
-    scrollState: LazyListState,
-    viewModel: SearchViewModel
 
     ) {
     val baseImageUrl = "https://image.tmdb.org/t/p/original/"
@@ -201,7 +197,7 @@ fun SearchMovies(
                     val movieUrl =
                         rememberAsyncImagePainter(
                             baseImageUrl + (item?.imagePoster ?: item?.backdropPath),
-                            filterQuality = FilterQuality.Low,
+                            filterQuality = FilterQuality.None,
                             error =  painterResource(id = R.drawable.ic_image_gallery_svgrepo_com),
                             contentScale = ContentScale.Crop
 

@@ -22,96 +22,65 @@ import javax.inject.Singleton
 @Singleton
 class MoviesRepositoryImpl @Inject constructor(
     private val api: MoviesApi,
-    private val db: MovieDatabase
 ) : MoviesRepository {
-    private val dao = db.dao
 
-    override suspend fun getMoviesGenre(fetchFromRemote: Boolean): Flow<Resource<MoviesGenreListing>> {
+    override suspend fun getMoviesGenre(page: Int): Flow<Resource<MoviesGenreListing>> {
         return flow {
-            emit(Resource.isLoading(true))
 
-            val remoteListings = try {
-                val response = api.getGenreMoviesListing()
-                response.toMoviesGenreListing()
+            val remoteMovies = try {
+                api.getGenreMoviesListing(page = page)
+
 
             } catch (e: IOException) {
                 e.printStackTrace()
                 emit(Resource.Error("Couldn't load data"))
-                null
+                Log.d("Hello", "http error loading")
 
+                null
             } catch (e: HttpException) {
                 e.printStackTrace()
                 emit(Resource.Error("Couldn't load data"))
                 null
             }
-            remoteListings?.let { listings ->
-                emit(
-                    Resource.Success(
-                        data = listings
-                    )
-                )
-                emit(Resource.isLoading(false))
-
+            remoteMovies.let {
+                val data = it?.body()?.toMoviesGenreListing()
+                emit(Resource.Success(data))
 
             }
+
+
         }
 
-    }
 
-    override suspend fun getMoviesTrendingPaging(page: Int): Flow<PagingData<Result>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = { TrendingMoviesPagingSource(api) }
-        ).flow
     }
 
 
-    override suspend fun getMoviesTrending(fetchFromRemote: Boolean): Flow<Resource<MoviesGenreListing>> {
+
+    override suspend fun getMoviesTrending(page: Int): Flow<Resource<MoviesGenreListing>> {
         return flow {
-            emit(Resource.isLoading(true))
-            val localMoviesListings = dao.readMovieTrendingListings()
-            if (localMoviesListings != null) {
-                emit(
-                    Resource.Success(
-                        data = localMoviesListings.toMoviesGenreListing()
-                    )
-                )
-            }
-            val shouldLoadFromCache = (localMoviesListings != null && !fetchFromRemote)
 
-            if (shouldLoadFromCache) {
-                emit(Resource.isLoading(false))
-                return@flow
-            }
+            val remoteMovies = try {
+                api.getMoviesTrendingPaging(page = page)
 
-            val remoteListings = try {
-                val response = api.getMoviesTrending()
-                response.toMoviesTrending()
 
             } catch (e: IOException) {
                 e.printStackTrace()
                 emit(Resource.Error("Couldn't load data"))
-                null
+                Log.d("Hello", "http error loading")
 
+                null
             } catch (e: HttpException) {
                 e.printStackTrace()
                 emit(Resource.Error("Couldn't load data"))
                 null
             }
-            remoteListings?.let { listings ->
-                dao.insertTrendingListings(listings)
-                emit(
-                    Resource.Success(
-                        data = dao.readMovieTrendingListings().toMoviesGenreListing()
-                    )
-                )
-                emit(Resource.isLoading(false))
-
+            remoteMovies.let {
+                val data = it?.body()?.toMoviesGenreListing()
+                emit(Resource.Success(data))
 
             }
+
+
         }
 
     }

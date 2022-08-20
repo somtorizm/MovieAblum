@@ -3,6 +3,7 @@ package com.vectorinc.vectormoviesearch.util
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.core.content.ContextCompat.startActivity
 import java.time.LocalDate
@@ -42,4 +43,31 @@ fun moveToDomain(url : Int, context: Context){
     } catch (ex: ActivityNotFoundException) {
         context.startActivity(webIntent)
     }
+}
+
+fun moveToPrivacy( context: Context){
+    val urlAppend = "https://sites.google.com/view/creaview/home"
+    val webIntent = Intent(
+        Intent.ACTION_VIEW,
+        Uri.parse(urlAppend)
+    )
+    try {
+        context.startActivity(webIntent)
+    } catch (ex: ActivityNotFoundException) {
+        context.startActivity(webIntent)
+    }
+}
+
+fun openLinkedInPage(context: Context) {
+    val linkedId = "ezinwa-victor-80242719a"
+    var intent = Intent(Intent.ACTION_VIEW, Uri.parse("linkedin://add/%@$linkedId"))
+    val packageManager: PackageManager = context.packageManager
+    val list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+    if (list.isEmpty()) {
+        intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("http://www.linkedin.com/profile/view?id=$linkedId")
+        )
+    }
+    context.startActivity(intent)
 }
