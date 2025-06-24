@@ -68,5 +68,3 @@ class MovieAppState(
  *
  * This is used to de-duplicate navigation events.
  */
-private fun NavBackStackEntry.lifecycleIsResumed() =
-    this.lifecycle.currentState == Lifecycle.State.RESUMED
